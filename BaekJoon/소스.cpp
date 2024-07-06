@@ -1,14 +1,32 @@
 #include <iostream>
-#include <cmath>
 using namespace std;
 
 int main()
 {
-	cout << "|\\_/|" << endl;
-	cout << "|q p|   /}" << endl;
-	cout << "( 0 )\"\"\"\\" << endl;
-	cout << "|\"^\"`    |" << endl;
-	cout << "||_/=\\\\__|" << endl;
+	int score;
+
+	cin >> score;
+
+	if (0 <= score && score < 60)
+	{
+		cout << "F";
+	}
+	else if (score <= 69)
+	{
+		cout << "D";
+	}
+	else if (score <= 79)
+	{
+		cout << "C";
+	}
+	else if (score <= 89)
+	{
+		cout << "B";
+	}
+	else if (score <= 100)
+	{
+		cout << "A";
+	}
 
 
 	return 0;
