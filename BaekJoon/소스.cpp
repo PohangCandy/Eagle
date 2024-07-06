@@ -4,11 +4,11 @@ using namespace std;
 
 int main()
 {
-	long long A, B, C;
-
-	cin >> A >> B >> C;
-	if (1 <= A <= pow(10, 12) && 1 <= B <= pow(10, 12)&& 1 <= C <= pow(10, 12))
-		cout << A + B + C <<endl;
+	cout << "|\\_/|" << endl;
+	cout << "|q p|   /}" << endl;
+	cout << "( 0 )\"\"\"\\" << endl;
+	cout << "|\"^\"`    |" << endl;
+	cout << "||_/=\\\\__|" << endl;
 
 
 	return 0;
