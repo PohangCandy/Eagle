@@ -1,16 +1,16 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 int main()
 {
-	int A, B, C;
+	long long A, B, C;
 
 	cin >> A >> B >> C;
-	cout<< (A + B) % C << endl;
-	cout<< ((A % C) + (B % C)) % C << endl;
-	cout<< (A * B) % C << endl;
-	cout<< ((A % C) * (B % C)) % C << endl;
+	if (1 <= A <= pow(10, 12) && 1 <= B <= pow(10, 12)&& 1 <= C <= pow(10, 12))
+		cout << A + B + C <<endl;
 
 
 	return 0;
 }
+
