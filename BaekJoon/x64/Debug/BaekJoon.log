@@ -1,2 +1,4 @@
 ﻿  소스.cpp
+C:\Users\user\Desktop\Baek\Eagle\BaekJoon\소스.cpp(20,24): warning C4804: '<=': 연산에 'bool' 형식을 사용하는 것은 안전하지 않습니다.
+C:\Users\user\Desktop\Baek\Eagle\BaekJoon\소스.cpp(20,42): warning C4804: '<=': 연산에 'bool' 형식을 사용하는 것은 안전하지 않습니다.
   BaekJoon.vcxproj -> C:\Users\user\Desktop\Baek\Eagle\x64\Debug\BaekJoon.exe
