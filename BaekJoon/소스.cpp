@@ -1,30 +1,28 @@
 #include <iostream>
+#include <vector>
 using namespace std;
-
-
 
 int main()
 {
-	ios_base::sync_with_stdio(false); //C 와 C++ 비동기 처리
-	cin.tie(nullptr);// cin과 cout 연결 끊기, 버퍼 나중에 한번에 처리 방식
+	ios_base::sync_with_stdio(false); //c,c++ 끊어주기
+	cin.tie(NULL); //cin,cout 자동 버버 출혈 해제
+	int A, B;
+	vector<int> vAB;
 
-	int T,A,B;
-	int* P;
-	cin >> T;
-	P = new int[T];
-	for (int i = 0; i < T; i++)
+
+	while(1)
 	{
 		cin >> A >> B;
-		P[i] = A + B;
-	}
-	if (T <= 1000000 && 1 <= A <= 1000 && 1 <= B <= 1000)
-	{
-		for (int i = 0; i < T; i++)
+		if (A == 0 && B == 0)
 		{
-			cout << P[i] << "\n"; //endl은 버퍼를 즉시 출력하므로 \n을 써서 버퍼 출력막기
+			break;
 		}
+		vAB.push_back(A + B);
 	}
-
+	for (int i = 0; i < vAB.size(); i++)
+	{
+		cout << vAB[i] << "\n";
+	}
 
 	return 0;
 }
