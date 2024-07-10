@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 int main()
@@ -7,34 +8,35 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	int N, M;
-	cin >> N >> M;
-	vector<int> vN(N);
+	float N;
+	float Max;
+	float sum = 0.0f;
+	cin >> N;
+	vector<float> vN(N);
 
-	//∫§≈Õ √ ±‚»≠
-	for (int t = 0; t < vN.size(); t++)
+	for (int i = 0; i < vN.size(); i++)
 	{
-		vN[t] = t + 1;
+		cin >> vN[i];
+		Max = vN[i];
 	}
-
-
-	int i, j;
-
-	for (int t = 0;t < M; t++)
+	for (int i = 0; i < vN.size(); i++)
 	{
-		cin >> i >> j;
-		if (1 <= i <= j <= N)
+		if (Max < vN[i])
 		{
-			int m = vN[i-1];
-			vN[i-1] = vN[j-1];
-			vN[j-1] = m;
+			Max = vN[i];
 		}
 	}
-
-	for (int t = 0; t < vN.size(); t++)
+	for (int i = 0; i < vN.size(); i++)
 	{
-		cout << vN[t] << " ";
+		
+		vN[i] = vN[i] / Max * 100;
+		sum += vN[i];
 	}
+
+	cout << fixed << setprecision(2);
+	cout << sum / N;
+
+
 
 
 	return 0;
