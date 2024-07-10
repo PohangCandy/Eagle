@@ -4,21 +4,38 @@ using namespace std;
 
 int main()
 {
-	ios_base::sync_with_stdio(false); //c,c++ 연결 끊어주기
-	cin.tie(NULL); //cin, cout 자동 버퍼 소멸 해제
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-	int A, B;
-	vector<int>  vAB;
+	int N, M;
+	cin >> N >> M;
+	vector<int> vN(N);
 
-	while (cin >> A >> B)
+	//벡터 초기화
+	for (int t = 0; t < vN.size(); t++)
 	{
-		vAB.push_back(A + B);
+		vN[t] = t + 1;
 	}
 
-	for(int i = 0; i < vAB.size(); i++)
+
+	int i, j;
+
+	for (int t = 0;t < M; t++)
 	{
-		cout << vAB[i] << "\n";
+		cin >> i >> j;
+		if (1 <= i <= j <= N)
+		{
+			int m = vN[i-1];
+			vN[i-1] = vN[j-1];
+			vN[j-1] = m;
+		}
 	}
+
+	for (int t = 0; t < vN.size(); t++)
+	{
+		cout << vN[t] << " ";
+	}
+
 
 	return 0;
 }
