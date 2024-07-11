@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <iomanip>
 using namespace std;
 
 int main()
@@ -8,35 +7,32 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	float N;
-	float Max;
-	float sum = 0.0f;
-	cin >> N;
-	vector<float> vN(N);
+	int T;
+	cin >> T;
+	vector<char> vc;
 
-	for (int i = 0; i < vN.size(); i++)
+	for (int i = 0; i < T; i++)
 	{
-		cin >> vN[i];
-		Max = vN[i];
-	}
-	for (int i = 0; i < vN.size(); i++)
-	{
-		if (Max < vN[i])
+		int R;
+		cin >> R;
+
+		string S;
+		cin >> S;
+
+		for (int j = 0; j < S.size(); j++)
 		{
-			Max = vN[i];
+			for (int k = 0; k < R; k++)
+			{
+				vc.push_back(S[j]);
+			}
 		}
+		for (int j = 0; j < vc.size(); j++)
+		{
+			cout << vc[j];
+		}
+		cout << "\n";
+		vc.clear();
 	}
-	for (int i = 0; i < vN.size(); i++)
-	{
-		
-		vN[i] = vN[i] / Max * 100;
-		sum += vN[i];
-	}
-
-	cout << fixed << setprecision(2);
-	cout << sum / N;
-
-
 
 
 	return 0;
