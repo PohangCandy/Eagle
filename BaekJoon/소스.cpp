@@ -8,7 +8,7 @@ int main()
 	string s;
 	vector<string> v;
 
-	while (getline(cin,s))
+	while (getline(cin, s))
 	{
 		v.push_back(s);
 	}
@@ -19,5 +19,11 @@ int main()
 	}
 
 
-	return 0;
+	string s;
+	cin >> s;
+
+	//기존의 배열을 가져와서 지금 있는 단어와 비교하자.
+
+
+		return 0;
 }

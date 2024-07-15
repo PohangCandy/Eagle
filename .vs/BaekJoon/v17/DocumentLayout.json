@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\user\\Desktop\\Baek\\Eagle\\",
+  "WorkspaceRootPath": "C:\\Users\\user\\Desktop\\BJ\\Eagle\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{69E8BC49-D3EF-423C-A832-718E9E868B3D}|BaekJoon\\BaekJoon.vcxproj|C:\\Users\\user\\Desktop\\Baek\\Eagle\\BaekJoon\\\uC18C\uC2A4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{69E8BC49-D3EF-423C-A832-718E9E868B3D}|BaekJoon\\BaekJoon.vcxproj|C:\\Users\\user\\Desktop\\BJ\\Eagle\\BaekJoon\\\uC18C\uC2A4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{69E8BC49-D3EF-423C-A832-718E9E868B3D}|BaekJoon\\BaekJoon.vcxproj|solutionrelative:BaekJoon\\\uC18C\uC2A4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -24,17 +24,13 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "\uC18C\uC2A4.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\Baek\\Eagle\\BaekJoon\\\uC18C\uC2A4.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\BJ\\Eagle\\BaekJoon\\\uC18C\uC2A4.cpp",
               "RelativeDocumentMoniker": "BaekJoon\\\uC18C\uC2A4.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\Baek\\Eagle\\BaekJoon\\\uC18C\uC2A4.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\BJ\\Eagle\\BaekJoon\\\uC18C\uC2A4.cpp",
               "RelativeToolTip": "BaekJoon\\\uC18C\uC2A4.cpp",
-<<<<<<< HEAD
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAKAAAA",
-=======
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAAAAAA",
->>>>>>> 92226b9cee3b012f7d9d5b512b55d421a9df39bb
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-07-06T06:55:18.544Z",
+              "WhenOpened": "2024-07-15T08:35:40.657Z",
               "EditorCaption": ""
             }
           ]
