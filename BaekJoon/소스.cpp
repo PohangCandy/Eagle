@@ -1,31 +1,55 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
+// 100 * 100의 메모리 영역
+// 사각형이 칠해지는 범위는 메모리에서 1로 표시됨
+// 1로 표시된 범위를 모두 더하면 전체 넓이가 나온다
+// 사각형의 넓이 10 *10이므로 x ~ x + 9
+// 0 - 9, 0 - 9
+// 0 - 99, 0 - 99
 
-//char input[5][15]; //5단어,최대 길이 15
+int paper[100][100] = {0};
 
 int main()
 {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-	char input[5][15] = {0}; //5단어,최대 길이 15, 전역 변수의 경우 따로 0으로 초기화 해주어야 한다.
-	//5단어를 받는다.
-	for (int i = 0; i < 5; i++)
+	int num;
+	cin >> num;
+	for (int i = 0; i < num; i++)
 	{
-		cin >> input[i];
-	}
-
-	for (int i = 0; i < 15; i++)
-	{
-		for (int j = 0; j < 5; j++)
+		int x, y;
+		cin >> x >> y;
+		int range_x = x + 10;
+		int range_y = y + 10;
+		int before = y;
+		for (x; x < range_x; x++)
 		{
-			if (input[j][i] != NULL)
+			y = before;
+			for (y ; y < range_y; y++) 
 			{
-				cout << input[j][i];
+				paper[x][y] = 1;
 			}
 		}
 	}
 
+	int count = 0;
+
+	for (int i = 0; i < 100; i++)
+	{
+		for (int j = 0; j < 100; j++)
+		{
+			if (paper[i][j] == 1)
+			{
+				count++;
+			}
+		}
+	}
+
+	cout << count;
+
 
 	return 0;
 }
-
