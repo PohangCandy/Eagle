@@ -1,54 +1,40 @@
 #include <iostream>
-#include <vector>
 using namespace std;
-
-// 100 * 100의 메모리 영역
-// 사각형이 칠해지는 범위는 메모리에서 1로 표시됨
-// 1로 표시된 범위를 모두 더하면 전체 넓이가 나온다
-// 사각형의 넓이 10 *10이므로 x ~ x + 9
-// 0 - 9, 0 - 9
-// 0 - 99, 0 - 99
-
-int paper[100][100] = {0};
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
+	
+	//cout << int('A');//65 - 55 = 10
+	//cout << int('1');//49 - 48 = 1
+	//입력받은 string N에서 한 단어씩 뽑고 'A' 이상일 경우 -55를 해서 나타내는 10진법으로 변환해본다.
+	
+	string input;
+	int N;
+	cin >> input >> N;
 
-	int num;
-	cin >> num;
-	for (int i = 0; i < num; i++)
+	int num = 0;
+	for (int i = input.size(); i > 0; i--)
 	{
-		int x, y;
-		cin >> x >> y;
-		int range_x = x + 10;
-		int range_y = y + 10;
-		int before = y;
-		for (x; x < range_x; x++)
+		int squareNum = 1;
+		if (input[i-1] >= 'A')
 		{
-			y = before;
-			for (y ; y < range_y; y++) 
-			{
-				paper[x][y] = 1;
-			}
+			input[i-1] = input[i-1] - 'A' + 10;
 		}
+		else if (input[i - 1] >= '0')
+		{
+			input[i - 1] = input[i - 1] - '0';
+		}
+		for (int j = 0; j < input.size() - i; j++)
+		{
+			squareNum *= N;
+		}
+		num += int(input[i-1]) * squareNum;
 	}
 
-	int count = 0;
+	cout << num;
 
-	for (int i = 0; i < 100; i++)
-	{
-		for (int j = 0; j < 100; j++)
-		{
-			if (paper[i][j] == 1)
-			{
-				count++;
-			}
-		}
-	}
-
-	cout << count;
 
 
 	return 0;
