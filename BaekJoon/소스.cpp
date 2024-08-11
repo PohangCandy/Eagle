@@ -6,42 +6,127 @@ int main()
 {
 	ios_base::sync_with_stdio(false);
 
-	int a, b, c, d, e, f;
+	int M, N;
+	int BWcount = 0;
+	int WBcount = 0;
 
-	cin >> a >> b >> c >> d >> e >> f;
+	cin >> M >> N;
+	vector<vector<char>> Map;
+	vector<char> line;
 
-	int x, y;
-	vector<int> first;
-	for (int i = -999; i <= 999; i++)
+	for (int i = 0; i < M; i++)
 	{
-		for (int j = -999; j <= 999; j++)
+		for (int j = 0; j < N; j++)
 		{
-			if ((a  * i) + (b  * j) == c)
+			char input;
+			cin >> input;
+			line.push_back(input);
+		}
+		Map.push_back(line);
+	} 
+
+	for (int i = 0; i < M - 8; i++)
+	{
+		for (int j = 0; j < N - 8; j++)
+		{
+			for(int k = )
+		}
+	}
+	//BW와 비교하기
+	for (int i = 0; i < M; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			if (i % 2 == 0)//짝수 줄인 경우
 			{
-				first.push_back(i);
-				first.push_back(j);
+				if (j % 2 == 0)//짝수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'B')
+					{
+						BWcount++;
+					}
+				}
+				else if (j % 2 == 1)//홀수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'W')
+					{
+						BWcount++;
+					}
+				}
+			}
+			else if (i % 2 == 1)//홀수 줄인 경우
+			{
+				if (j % 2 == 0)//짝수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'W')
+					{
+						BWcount++;
+					}
+				}
+				else if (j % 2 == 1)//홀수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'B')
+					{
+						BWcount++;
+					}
+				}
+			}
+		}
+	}
+	//WB와 비교하기
+	for (int i = 0; i < M; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			if (i % 2 == 0)//짝수 줄인 경우
+			{
+				if (j % 2 == 0)//짝수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'W')
+					{
+						BWcount++;
+					}
+				}
+				else if (j % 2 == 1)//홀수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'B')
+					{
+						BWcount++;
+					}
+				}
+			}
+			else if (i % 2 == 1)//홀수 줄인 경우
+			{
+				if (j % 2 == 0)//짝수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'B')
+					{
+						BWcount++;
+					}
+				}
+				else if (j % 2 == 1)//홀수 번째 단어인 경우
+				{
+					if (Map[i][j] == 'W')
+					{
+						BWcount++;
+					}
+				}
 			}
 		}
 	}
 
-	for (int i = 0; i < first.size(); i++)
+	if (BWcount > WBcount)
 	{
-		if (i % 2 == 0)
-		{
-			x = first[i];
-			y = first[i + 1];
-			if ((d * x) + (e * y) == f)
-			{
-				break;
-			}
-		}
+		cout << M * N - BWcount;
+	}
+	else 
+	{
+		cout << M * N - WBcount;
 	}
 
-	cout << x << " " << y;
-
-	//(a+d)x + (b+e)y = c+f
-	//ax + by = c
 	
+
+
 
 	return 0;
 }
