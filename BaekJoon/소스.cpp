@@ -14,36 +14,24 @@ int main()
 	int N;
 	cin >> N;
 
-	int numofFive = N / 5;
-	int numofThree = N / 3;
-
-	int last = N;
-	int time = 0;
-
-	// 입력한 숫자를 5로 나눌 수 있는 최대 횟수는 
-	// 입력 숫자를 5로 나눈 몫과 같다.
-	// 3도 마찬가지 
-	for (int i = 0; i < numofThree; i++)
+	int quotient = 0;
+	while (1)
 	{
-		for (int j = numofFive; j > 0; j--)
+		if (N % 5 == 0)
 		{
-			if (last % 5 != 0)
-			{
-				break;
-			}
-			else if(last % 3 != 0)
-			{
-
-			}
-
-			last -= 5;
-			time++;
+			quotient += N / 5;
+			cout << quotient;
+			return 0;
 		}
-
-		last -= 3;
-		time++;
+		N -= 3;
+		if (N < 0)
+		{
+			break;
+		}
+		quotient += 1;
 	}
 
+	cout << -1;
 
 	return 0;
 }
