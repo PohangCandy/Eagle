@@ -1,42 +1,55 @@
-//주어진 문자열에서 중복되지 않게 연속된 부분 문자열을 구한다.
-//중복되지 않으려면 집합에 넣고 사이즈를 재면 될 것이다.
+// 두 수를 입력 받아서 최소공배수를 출력하자.
+// 하나의 수의 배수를 구한 후, 다른 수로 나눠서 나머지가 0이면 공배수가 된다.
+// 더 큰 수를 찾아서 해당 수의 배수를 작은 수로 나누는 작업이 더 효율적이다.
 
 #include <iostream>
-#include <set>
 using namespace std;
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 
-	string S;
-	cin >> S;
+	int T;
+	cin >> T;
 
-	set<string> st;
-	string S_part;
-	
-	//삼중 포문에서 이중 포문으로 줄였다.
-	//제일 처음 나오는 문자를 포함하는 모든 부분 문자열을 집합에 넣는다
-	//a,b,a,b,c순으로 증가시켜주는 for문
-	//a,ab,aba,abab,ababc 순으로 증가시키기 위한 for문
-	for (auto i = S.begin(); i != S.end(); i++)
+	for (int i = 0; i < T; i++)
 	{
-		int index = distance(S.begin(), i);
-		S_part.clear();
-		while(index != S.size())
+		int first, second;
+		int common_mutiple;
+
+		cin >> first >> second;
+		if (first >= second)
 		{
-			S_part += S[index];
-			st.insert(S_part);
-			index++;
+			int i = 1;
+			while (1)
+			{
+				int first_copy = first * i;
+				if (first_copy % second == 0)
+				{
+					common_mutiple = first_copy;
+					break;
+				}
+				i++;
+			}
+			cout << common_mutiple << "\n";
 		}
+		else
+		{
+			int i = 1;
+			while (1)
+			{
+				int second_copy = second * i;
+				if (second_copy % first == 0)
+				{
+					common_mutiple = second_copy;
+					break;
+				}
+				i++;
+			}
+			cout << common_mutiple << "\n";
+		}
+
 	}
-
-	//for (auto& a : st)
-	//{
-	//	cout << a << " ";
-	//}
-
-	cout << st.size();
 
 	return 0;
 }
