@@ -1,55 +1,70 @@
-// 학생들을 번호 순서대로 집어넣게 하기위한 프로그램
-// 입력받은 번호가, 다음에 들어올 숫자면 제외(통과)하고
-// 아니라면 스택에 쌓는다.
-// 스택에 가장 최근에 들어온 값이 다음에 들어갈 숫자면 pop한다.
+//큐 구현하기
 
 #include <iostream>
-#include <stack>
+#include <queue>
 using namespace std;
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
+	queue<int> que;
 
 	int N;
 	cin >> N;
-	int order = 1;
-
-	stack<int> line;
 
 	for (int i = 0; i < N; i++)
 	{
-		int input;
+		string input;
 		cin >> input;
-		//input을 입력받고 , order와 다르다면 stack에 있는 값들도 나가지 못한다.
-		//input이 order라면, 라인을 통과시킨 후 다음 순서가 스택의 탑에 있는지 조사한다.
-		if (input == order)
+
+		if (input == "push")
 		{
-			order++;
-			while (!line.empty())
+			int num;
+			cin >> num;
+			que.push(num);
+		}
+		else if (input == "pop")
+		{
+			if (que.empty())
 			{
-				if (line.top() == order)
-				{
-					line.pop();
-					order++;
-				}
-				else break;
+				cout << -1 << "\n";
+			}
+			else
+			{
+				cout << que.front() << "\n";
+				que.pop();
 			}
 		}
-		//input이 order가 아니면 stack에 넣는다.
-		else 
+		else if (input == "size")
 		{
-			line.push(input);
+			cout << que.size() << "\n";
+		}
+		else if (input == "empty")
+		{
+			if (que.empty())
+			{
+				cout << 1 << "\n";
+			}
+			else cout << 0 << "\n";
+		}
+		else if (input == "front")
+		{
+			if (que.empty())
+			{
+				cout << -1 << "\n";
+			}
+			else cout << que.front() << "\n";
+		}
+		else if (input == "back")
+		{
+			if (que.empty())
+			{
+				cout << -1 << "\n";
+			}
+			else cout << que.back() << "\n";
 		}
 	}
-
-	if (!line.empty())
-	{
-		cout << "Sad";
-	}
-	else cout << "Nice";
-
 
 	return 0;
 }
