@@ -1,5 +1,3 @@
-//큐 구현하기
-
 #include <iostream>
 #include <queue>
 using namespace std;
@@ -8,63 +6,43 @@ int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
+
 	queue<int> que;
+	queue<int> result;
 
-	int N;
-	cin >> N;
-
-	for (int i = 0; i < N; i++)
+	int N, K;
+	cin >> N >> K;
+	// 입력 - 1 만큼의 수를 다시 큐에 삽입하고
+	// 입력한 인덱스의 요소 제거
+	// 모든 요소가 제거 될 때까지 반복
+	for (int i = 1; i <= N; i++)
 	{
-		string input;
-		cin >> input;
+		que.push(i);
+	}
 
-		if (input == "push")
+	while (!que.empty())
+	{
+		for (int i = 0; i < K - 1; i++)
 		{
-			int num;
-			cin >> num;
-			que.push(num);
+			que.push(que.front());
+			que.pop();
 		}
-		else if (input == "pop")
+		result.push(que.front());
+		que.pop();
+	}
+	cout << "<";
+
+	while (!result.empty())
+	{
+		cout << result.front();
+		result.pop();
+		if (result.size() != 0)
 		{
-			if (que.empty())
-			{
-				cout << -1 << "\n";
-			}
-			else
-			{
-				cout << que.front() << "\n";
-				que.pop();
-			}
-		}
-		else if (input == "size")
-		{
-			cout << que.size() << "\n";
-		}
-		else if (input == "empty")
-		{
-			if (que.empty())
-			{
-				cout << 1 << "\n";
-			}
-			else cout << 0 << "\n";
-		}
-		else if (input == "front")
-		{
-			if (que.empty())
-			{
-				cout << -1 << "\n";
-			}
-			else cout << que.front() << "\n";
-		}
-		else if (input == "back")
-		{
-			if (que.empty())
-			{
-				cout << -1 << "\n";
-			}
-			else cout << que.back() << "\n";
+			cout << ", ";
 		}
 	}
+
+	cout << ">";
 
 	return 0;
 }
