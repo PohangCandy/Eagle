@@ -1,66 +1,54 @@
-//문자열, 여러가지 괄호가 중간에 포함되어 있는 경우에도 한 쌍을 잘 이루고 있는지를 출력한다.
+// 학생들을 번호 순서대로 집어넣게 하기위한 프로그램
+// 입력받은 번호가, 다음에 들어올 숫자면 제외(통과)하고
+// 아니라면 스택에 쌓는다.
+// 스택에 가장 최근에 들어온 값이 다음에 들어갈 숫자면 pop한다.
+
 #include <iostream>
-#include<string>
-#include<stack>
+#include <stack>
 using namespace std;
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
-	stack<char> stk;
 
-	// 입력을 받을 동안 (,),[,]가 들어오는지 확인했다가
-	// 만약에 들어오면 반대편 쌍이 있는지 확인해면 되지 않을까?
-	// 스택을 이용해서 구현한다.
-	string s;
+	int N;
+	cin >> N;
+	int order = 1;
 
-	while (1)
+	stack<int> line;
+
+	for (int i = 0; i < N; i++)
 	{
-		while (!stk.empty())
+		int input;
+		cin >> input;
+		//input을 입력받고 , order와 다르다면 stack에 있는 값들도 나가지 못한다.
+		//input이 order라면, 라인을 통과시킨 후 다음 순서가 스택의 탑에 있는지 조사한다.
+		if (input == order)
 		{
-			stk.pop();
+			order++;
+			while (!line.empty())
+			{
+				if (line.top() == order)
+				{
+					line.pop();
+					order++;
+				}
+				else break;
+			}
 		}
-		getline(cin, s);
-		if (s == ".") break;
-		auto a = s.begin();
-		while (a != s.end())
+		//input이 order가 아니면 stack에 넣는다.
+		else 
 		{
-			if (*a == '(' || *a == '[')
-			{
-				stk.push(*a);
-			}
-			else if (*a == ')')
-			{
-				if (!stk.empty())
-				{
-					if (stk.top() == '(') stk.pop();
-					else break;
-				}
-				else //empty결과를 통해 오답임을 알려주기 위함
-				{
-					stk.push(*a);
-					break;
-				}	
-			}
-			else if (*a == ']')
-			{
-				if (!stk.empty())
-				{
-					if (stk.top() == '[') stk.pop();
-					else break;
-				}
-				else //empty결과를 통해 오답임을 알려주기 위함
-				{
-					stk.push(*a);
-					break;
-				}
-			}
-			a++;
+			line.push(input);
 		}
-		if (stk.empty()) cout << "yes" <<"\n";
-		else cout << "no" << "\n";
 	}
+
+	if (!line.empty())
+	{
+		cout << "Sad";
+	}
+	else cout << "Nice";
 
 
 	return 0;
