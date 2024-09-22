@@ -1,74 +1,117 @@
+// 배열을 이용해서 구현했는데 이 경우 메모리가 삭제되는게 아니므로 낭비가 발생할 수 있다.
+ 
 #include <iostream>
-#include <stack>
 using namespace std;
 
-// 스택을 사용해서 문제를 해결해본다.
-// 스택 하나만으론 중간에 있는 요소를 삭제 할 수 없으므로
-// 두개를 만들어 커서를 중심으로 나눠준다.
+#define MAX_SIZE (10000)
+
+template <typename T>
+class queue {
+private:
+	T data[MAX_SIZE];
+	int _front;
+	int _back;
+
+public:
+	queue() {
+		_front = 0;
+		_back = 0;
+	}
+	~queue() {}
+
+	void push(T inputdata)
+	{
+		data[_back] = inputdata;
+		_back ++;
+	}
+
+	T pop()
+	{
+		T res = data[_front];
+		_front++;
+		return res;
+	}
+
+	int size()
+	{
+		return _back - _front;
+	}
+
+	bool empty()
+	{
+		return _back == _front;
+	}
+
+	T front()
+	{
+		T res = data[_front];
+		return res;
+	}
+
+	T back()
+	{
+		T res = data[_back - 1];
+		return res;
+	}
+};
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
+	queue<int> que;
 
-	stack<char> left;
-	stack<char> right;
-
-	string input;
-	cin >> input;
-	for (auto& a : input)
+	int N;
+	cin >> N;
+	for (int i = 0; i < N; i++)
 	{
-		left.push(a);
-	}
-
-	int M;
-	cin >> M;
-	for (int i = 0; i < M; i++)
-	{
-		char c;
-		cin >> c;
-		if (c == 'L')
+		string input;
+		cin >> input;
+		if (input == "push")
 		{
-			if (!left.empty())
+			int num;
+			cin >> num;
+			que.push(num);
+		}
+		else if (input == "pop")
+		{
+			if (que.empty())
 			{
-				right.push(left.top());
-				left.pop();
+				cout << "-1" << "\n";
+			}
+			else
+			{
+				cout << que.front() << "\n";
+				que.pop();
 			}
 		}
-		else if (c == 'D')
+		else if (input == "size")
 		{
-			if (!right.empty())
+			cout << que.size() << "\n";
+		}
+		else if (input == "empty")
+		{
+			bool e = que.empty();
+			cout << e << "\n";
+		}
+		else if (input == "front")
+		{
+			if (que.empty()) cout << -1 << "\n";
+			else
 			{
-				left.push(right.top());
-				right.pop();
+				cout << que.front() << "\n";
 			}
 		}
-		else if (c == 'B')
+		else if (input == "back")
 		{
-			if (!left.empty())
+			if (que.empty()) cout << -1 << "\n";
+			else
 			{
-				left.pop();
+				cout << que.back() << "\n";
 			}
-		}
-		else if (c == 'P')
-		{
-			char p;
-			cin >> p;
-			left.push(p);
 		}
 	}
 
-	while (!left.empty())
-	{
-		right.push(left.top());
-		left.pop();
-	}
-
-	while (!right.empty())
-	{
-		cout << right.top();
-		right.pop();
-	}
 
 	return 0;
 }
