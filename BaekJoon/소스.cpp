@@ -1,117 +1,48 @@
-// 배열을 이용해서 구현했는데 이 경우 메모리가 삭제되는게 아니므로 낭비가 발생할 수 있다.
- 
+// 요세푸스 순열
+// 원모양으로 둘러 앉은 사람들을 번호에 따라 한명씩 빼는 문제
+// 1 - 7 까지 삭제
+// 3 6 2(2) 7(5) 5(3) 1(1) 4
+// 중간에서 요소를 빼므로 리스트를 써서 작성하고
+// 만약 반복자가 리스트의 끝에 위치하면 다시 begin으로 보낸다.
+
 #include <iostream>
+#include <list>
 using namespace std;
-
-#define MAX_SIZE (10000)
-
-template <typename T>
-class queue {
-private:
-	T data[MAX_SIZE];
-	int _front;
-	int _back;
-
-public:
-	queue() {
-		_front = 0;
-		_back = 0;
-	}
-	~queue() {}
-
-	void push(T inputdata)
-	{
-		data[_back] = inputdata;
-		_back ++;
-	}
-
-	T pop()
-	{
-		T res = data[_front];
-		_front++;
-		return res;
-	}
-
-	int size()
-	{
-		return _back - _front;
-	}
-
-	bool empty()
-	{
-		return _back == _front;
-	}
-
-	T front()
-	{
-		T res = data[_front];
-		return res;
-	}
-
-	T back()
-	{
-		T res = data[_back - 1];
-		return res;
-	}
-};
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
-	queue<int> que;
 
-	int N;
-	cin >> N;
-	for (int i = 0; i < N; i++)
+	list<int> lst;
+
+	int N, K;
+	cin >> N >> K;
+	for (int i = 1; i <= N; i++)
 	{
-		string input;
-		cin >> input;
-		if (input == "push")
-		{
-			int num;
-			cin >> num;
-			que.push(num);
-		}
-		else if (input == "pop")
-		{
-			if (que.empty())
-			{
-				cout << "-1" << "\n";
-			}
-			else
-			{
-				cout << que.front() << "\n";
-				que.pop();
-			}
-		}
-		else if (input == "size")
-		{
-			cout << que.size() << "\n";
-		}
-		else if (input == "empty")
-		{
-			bool e = que.empty();
-			cout << e << "\n";
-		}
-		else if (input == "front")
-		{
-			if (que.empty()) cout << -1 << "\n";
-			else
-			{
-				cout << que.front() << "\n";
-			}
-		}
-		else if (input == "back")
-		{
-			if (que.empty()) cout << -1 << "\n";
-			else
-			{
-				cout << que.back() << "\n";
-			}
-		}
+		lst.push_back(i);
 	}
 
+	auto it = lst.begin();
+	int last = 0;
+	int q;
+	while (!lst.empty())
+	{
+		for (int i = 0; i < K - 1; i++)
+		{
+			if (it == lst.end())
+			{
+				it = lst.begin();
+				it++;
+			}
+			else
+			{
+				it++;
+			}
+		}
+		cout << *it << " ";
+		it = lst.erase(it);
+	}
 
 	return 0;
 }
