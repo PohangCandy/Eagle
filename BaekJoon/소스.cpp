@@ -1,152 +1,73 @@
+// 단어 뒤집기
+// <>가 있는 친구들은 그대로 나오고
+// 나머지는 반대로 뒤집혀 나오므로
+// deq을 사용해서
+// <가 감지되면
+// >가 나올때까지 받은 그대로 pop한다.
+// 공백문자의 경우,
+// deq가 비워질때까지 pop_back 한다.
+// 일반문자의 경우 push_front 한다.
+
 #include <iostream>
+#include <string>
+#include <deque>
 using namespace std;
-
-#define MAX_SIZE (10000)
-
-template<typename T>
-class deque {
-private:
-	T data[MAX_SIZE];
-	int _front;
-	int _back;
-public:
-	deque(){
-		_front = 0;
-		_back = 0;
-	}
-	~deque() {
-	}
-
-	void push_front(int inputdata)
-	{
-		for (int i = _back; i > _front; i--)
-		{
-			data[i] = data[i - 1];
-		}
-		data[_front] = inputdata;
-		_back++;
-	}
-
-	void push_back(int inputdata)
-	{
-		data[_back] = inputdata;
-		_back++;
-	}
-
-	void pop_front()
-	{
-		for (int i = 0; i < _back; i++)
-		{
-			data[i] = data[i + 1];
-		}
-		_back--;
-	}
-
-	void pop_back()
-	{
-		_back--;
-	}
-
-	int size()
-	{
-		return _back - _front;
-	}
-
-	bool empty()
-	{
-		return (_back == _front);
-	}
-
-	T front()
-	{
-		T res = data[_front];
-		return res;
-	}
-
-	T back()
-	{
-		T res = data[_back - 1];
-		return res;
-	}
-
-};
-
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
+	deque<char> deq;
 
-	deque<int> deq;
-	int N;
-	cin >> N;
-	for (int i = 0; i < N; i++)
+	string input;
+	getline(cin, input);
+	// 공백문자를 기준으로 단어를 뒤집을 것이므로
+	// 임의로 공백문자를 추가한다.
+	input += " ";
+	bool p_f = false;
+
+	for (auto& a : input)
 	{
-		string input;
-		cin >> input;
-		int X;
-		if (input == "push_front")
+		if (a == ' ')
 		{
-			cin >> X;
-			deq.push_front(X);
-		}
-		else if (input == "push_back")
-		{
-			cin >> X;
-			deq.push_back(X);
-		}
-		else if (input == "pop_front")
-		{
-			if (deq.empty())
+			while (!deq.empty())
 			{
-				cout << -1 << "\n";
-			}
-			else
-			{
-				cout << deq.front() << "\n";
-				deq.pop_front();
-			}
-		}
-		else if (input == "pop_back")
-		{
-			if (deq.empty())
-			{
-				cout << -1 << "\n";
-			}
-			else
-			{
-				cout << deq.back() << "\n";
+				cout << deq.back();
 				deq.pop_back();
 			}
+			cout << " ";
 		}
-		else if (input == "size")
+		else if (a == '<')
 		{
-			cout << deq.size() << "\n";
+			p_f = true;
+			deq.push_front(a);
 		}
-		else if (input == "empty")
+		else if (a == '>')
 		{
-			cout << deq.empty() << "\n";
-		}
-		else if (input == "front")
-		{
-			if (deq.empty())
+			if (p_f)
 			{
-				cout << -1 << "\n";
+				deq.push_front(a);
+				p_f = false;
+				while (!deq.empty())
+				{
+					cout << deq.back();
+					deq.pop_back();
+				}
 			}
 			else
 			{
-				cout << deq.front() << "\n";
+				deq.push_back(a);
 			}
 		}
-		else if (input == "back")
+		else
 		{
-			if (deq.empty())
+			if (p_f)
 			{
-				cout << -1 << "\n";
+				deq.push_front(a);
 			}
 			else
 			{
-				cout << deq.back() << "\n";
+				deq.push_back(a);
 			}
 		}
 	}
