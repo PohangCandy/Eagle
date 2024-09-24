@@ -1,76 +1,68 @@
-// 단어 뒤집기
-// <>가 있는 친구들은 그대로 나오고
-// 나머지는 반대로 뒤집혀 나오므로
-// deq을 사용해서
-// <가 감지되면
-// >가 나올때까지 받은 그대로 pop한다.
-// 공백문자의 경우,
-// deq가 비워질때까지 pop_back 한다.
-// 일반문자의 경우 push_front 한다.
+// 쇠막대기 레이저로 자르기
+// ()가 레이저 ( 가 막대의 시작점이다.
+// )가 나오기 전까지 얼마나 많은 ()쌍이 있는지 찾으면 된다.
+// 막대의 개수는 레이저의 개수 + 1이 된다.
+
+// 레이저가 나오면 현재 있는 막대기들은 모두 짤린다.
+// )가 나오면 가장 최근에 있는( 값을 pop한다
+// pop한 후 남아있는 사이즈가 남아있는 막대의 개수이므로
+// size만큼을 더해준다.
+// 이전에 들어왔던 값이 (가 아니라 
+// )라는 것을 판별해줄 bool값을 넣어서
+// true라면 그 다음에 오는 )는 막대의 끝 부분이다.
+// 이 경우 size를 더하지 않고 pop만 실행해준다.
 
 #include <iostream>
-#include <string>
-#include <deque>
+#include <stack>
 using namespace std;
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
-	deque<char> deq;
 
 	string input;
-	getline(cin, input);
-	// 공백문자를 기준으로 단어를 뒤집을 것이므로
-	// 임의로 공백문자를 추가한다.
-	input += " ";
-	bool p_f = false;
+	cin >> input;
+	stack<char> stk;
 
-	for (auto& a : input)
+	int num = 0;
+	bool laser = false;
+
+	for (auto a : input)
 	{
-		if (a == ' ')
+		//막대가 추가된 경우 개수를 증가시켜준다.
+		if (a == '(')
 		{
-			while (!deq.empty())
-			{
-				cout << deq.back();
-				deq.pop_back();
-			}
-			cout << " ";
+			stk.push(a);
+			num++;
+			//다음에 )가 오면 laser가 된다.
+			laser = true;
 		}
-		else if (a == '<')
+		else if (a == ')')
 		{
-			p_f = true;
-			deq.push_front(a);
-		}
-		else if (a == '>')
-		{
-			if (p_f)
+			// 레이저인 경우와 막대의 끝인 경우 두가지가 있다.
+			// 바로 직전에 ( 가 있었다면 레이저가 된다.
+			if (laser)
 			{
-				deq.push_front(a);
-				p_f = false;
-				while (!deq.empty())
-				{
-					cout << deq.back();
-					deq.pop_back();
-				}
+				//먼저 직전에 막대로 인식했던 (를 빼준다.
+				num--;
+				stk.pop();
+				//현재 막대기 개수만큼 더한다.
+				num += stk.size();
+				//곧 이어 나오는 )는 막대 끝을 의미한다.
+				laser = false;
 			}
 			else
 			{
-				deq.push_back(a);
-			}
-		}
-		else
-		{
-			if (p_f)
-			{
-				deq.push_front(a);
-			}
-			else
-			{
-				deq.push_back(a);
+				//막대 끝이라면 막대 하나를 스택에서 빼준다.
+				stk.pop();
+				//이후에 )가 와도 역시 막대끝이다.
+				//laser = false;로 유지한다.
 			}
 		}
 	}
+
+	cout << num;
 
 	return 0;
 }
