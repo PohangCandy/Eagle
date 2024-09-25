@@ -1,69 +1,40 @@
-// count 함수를 사용해서 입력받은 요소를 배열에 저장해둔 후
-// 가장 최근에 들어온 값이 자신의 개수보다 크면 해당 값을 result로 갖도록해준다.
-
+// 피연산자를 스택에 넣고, 
+// 연산자를 만난 경우
+// 스택에 있는 두 값을 꺼내서 연산해준다.
 #include <iostream>
 #include <stack>
 using namespace std;
-
-int arr[1000001];
-//개수 저장
-int num[1000001] {0};
-//자신보다 많은 수 저장
-int res[1000001];
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
+	//알파벳의 숫자 값을 집어넣을 배열을 만들어준다.
+	int alpha[27];
+
 	int N;
 	cin >> N;
-	for (int i = 0; i < N; i++)
-	{
-		int input;
-		cin >> input;
-		arr[i] = input;
-		//인덱스 번호에 개수를 저장
-		num[input] += 1;
-	}
+	string str;
+	cin >> str;
 
 	stack<int> stk;
 
 	for (int i = 0; i < N; i++)
 	{
-		// 인덱스 번호를 스택에 push하면서 
-		// num[stk.top()]와 num[arr[i]]를 비교해서
-		// 스택의 탑에 있는 값의 개수가 더 작다면
-		// res[stk.top()] = arr[i]이 된다.
-		//스택이 빌때까지 해당 작업을 반복한다.
-		while (!stk.empty())
-		{
-			// 스택의 인덱스 번호는 0부터 시작하므로
-			// num의 인덱스와 맞추기 위해 +1을 해준다.
-			if (num[arr[i]] > num[arr[stk.top()]])
-			{
-				res[stk.top()] = arr[i];
-				stk.pop();
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		stk.push(i);
+		int input;
+		cin >> input;
+		//알파벳에 저장될 수를 배열에 저장
+		alpha[i] = input;
 	}
 
-	//스택에 남아있는 친구들에겐 -1을 준다.
-	while (!stk.empty())
+	for (int i = 0; i < str.length(); i++)
 	{
-		res[stk.top()] = -1;
-		stk.pop();
-	}
+		// 앞에서부터 순서대로 검사하면서
+		// 피연산자를 스택에 넣는다.
+		// 연산자를 만나면 스택에 있는 두 개의 값을 꺼내서 연산하자.
 
-	for (int i = 0; i < N; i++)
-	{
-		cout << res[i] << " ";
+		
 	}
 
 	return 0;
