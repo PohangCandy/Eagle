@@ -1,76 +1,78 @@
-// 피연산자를 스택에 넣고, 
-// 연산자를 만난 경우
-// 스택에 있는 두 값을 꺼내서 연산해준다.
 #include <iostream>
 #include <stack>
 using namespace std;
 
-//알파벳의 숫자 값을 집어넣을 배열을 만들어준다.
-double alpha[27];
+stack<char> oper;
+
+
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
+	// 우선순위가 더 낮은 부호가 감지되면 
+	// 전부 pop하고
+	// 더 높으면 그대로 스택에 담는다.
+	// (가 나오면
+	// 그 다음에 나온 부호는 무조건 스택엥 담고
+	// )가 나오면 
+	// (이 나올때까지 전부 pop한다.
+	string input;
+	cin >> input;
 
-	int N;
-	cin >> N;
-	string str;
-	cin >> str;
-
-	stack<double> stk;
-
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < input.length(); i++)
 	{
-		double input;
-		cin >> input;
-		//알파벳에 저장될 수를 배열에 저장
-		alpha[i] = input;
-	}
-
-	for (int i = 0; i < str.length(); i++)
-	{
-		// 앞에서부터 순서대로 검사하면서
-		// 피연산자를 스택에 넣는다.
-		if (str[i] >= 'A' && str[i] <= 'Z')
+		//입력이 단어라면 그냥 출력한다.
+		if (input[i] >= 'A' && input[i] <= 'Z')
 		{
-			stk.push(alpha[str[i] - 'A']);
+			cout << input[i];
 		}
+		//입력이 연산자라면
 		else
 		{
-		// 연산자를 만나면 스택에 있는 
-		// 두 개의 값을 꺼내서 연산하자.
-			if (!stk.empty())
+			//다른 연산자가 스택에 이미 있다면
+			if (!oper.empty())
 			{
-				double a = stk.top();
-				stk.pop();
-				double result = 0;
-				if (str[i] == '+')
+				char c = input[i];
+				char t = oper.top();
+				if (c == '*' || c == '/')
 				{
-					result = stk.top() + a;
+					oper.push(c);
 				}
-				else if (str[i] == '-')
+				else if (c == '+' || c == '-')
 				{
-					result = stk.top() - a;
+					//
+					if (t == '(')
+					{
+
+					}
+					else if (t == '*' || t == '/')
+					{
+						while (!oper.empty())
+						{
+							cout << oper.top();
+							oper.pop();
+						}
+					}
 				}
-				else if (str[i] == '/')
+				else if (c == '(')
 				{
-					result = stk.top() / a;
+					oper.push(c);
 				}
-				else if (str[i] == '*')
+				else if (c == ')')
 				{
-					result = stk.top() * a;
+
 				}
-				stk.pop();
-				// 연산한 결과를 다시 stk에 넣는다.
-				stk.push(result);
 			}
+			//다른 연산자가 스택에 없다면
+			else
+			{
+				oper.push(input[i]);
+			}
+
 		}
 	}
 
-	cout << fixed;
-	cout.precision(2);
-	cout << stk.top();
 
 	return 0;
 }
