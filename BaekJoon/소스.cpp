@@ -1,34 +1,53 @@
-//stack¿¡ 2°³ÀÇ ¼ıÀÚ°¡ ½×ÀÌ¸é
-//topÀ» ±×³É ´õÇÏ°í
-//popÇÑ ÈÄ¿¡
-//±× ´ÙÀ½ topÀ» *100À» ÇØ¼­ ´õÇÑ´Ù.
-#include <stack>
+// íë¥¼ ì‚¬ìš©í•´ì„œ ì…ë ¥ë°›ì€ ë¬¸ì¥ì˜ frontë¥¼ ë¹¼ë©´ì„œ
+// ìˆœì°¨ì ìœ¼ë¡œ ì ‘ë¯¸ì‚¬ë¥¼ ë²¡í„°ì— ë‹´ëŠ”ë‹¤.
 #include <iostream>
+#include <queue>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
-	stack<int> stk;
+	queue<char> que;
+	vector<string> vec;
 
-	int result = 0;
-	for (int i = 0; i < 4; i++)
+	string S;
+	cin >> S;
+
+	for (auto& a : S)
 	{
-		int input;
-		cin >> input;
-		stk.push(input);
-		if (stk.size() >= 2)
-		{
-			result += stk.top();
-			stk.pop();
-			//
-			result += stk.top() * 100;
-			stk.pop();
-		}
+		que.push(a);
 	}
 
-	cout << result;
+	while (!que.empty())
+	{
+		string str;
+		while (!que.empty())
+		{
+			str += que.front();
+			que.pop();
+		}
+		vec.push_back(str);
+		for (auto& a : str)
+		{
+			que.push(a);
+		}
+		que.pop();
+	}
+
+	sort(vec.begin(), vec.end());
+
+	for (int i = 0; i < vec.size(); i++)
+	{
+		cout << vec[i];
+		if (i != vec.size() - 1)
+		{
+			cout << "\n";
+		}
+	}
+	
 
 	return 0;
 }
