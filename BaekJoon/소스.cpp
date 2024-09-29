@@ -1,65 +1,88 @@
-// nCm
-// n! / r! * (n-r)!
-// 각각에서 2와 5가 얼마나 있는지 알아낸다.
-// 분모에 있는 2와 5의 개수를 분자가 갋아먹게 만든다.
-// 배열을 선언해서 분모의 2와 5의 개수를 담고
-// 분자의 2와 5의 개수만큼 빼준다.
-
 #include <iostream>
+#include <sstream>
+#include <vector>
+// 공백문자를 건너뛰고 숫자를 저장하는 방법
+// 
+// 노가다 없이 최대공약수 구하기
+// 유클리드 호제법 사용
+#include <string>
 using namespace std;
 
-void CountTwoFive(long long&two, long long&five, int n)
+
+int GCD(int s, int b)
 {
-	//i가 2*10^9 * 2가 되어 int형 최대치를 초과할 수 있다.
-	for (long long i = 2; i <= n; i *= 2)
+	if (b >= s)
 	{
-		two += n / i;
+		if (b % s == 0)
+		{
+			return s;
+		}
+		else
+		{
+			return GCD(s, b % s);
+		}
 	}
-	for (long long i = 5; i <= n; i *= 5)
+	else
 	{
-		five += n / i;
+		if (s % b == 0)
+		{
+			return b;
+		}
+		else
+		{
+			return GCD(b, s % b);
+		}
 	}
 }
 
-void SubtractTwoFive(long long& two, long long& five, int n)
-{
-	for (long long i = 2; i <= n; i *= 2)
-	{
-		two -= n / i;
-	}
-	for (long long i = 5; i <= n; i *= 5)
-	{
-		five -= n / i;
-	}
-}
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
-	//빈 배열로 초기화
-	//2와 5의 개수가 int형을 초과 할 수 있다.
-	long long store[2] = { 0 };
+	// 양의 정수 n개가 주어졌을때 가능한 모든 쌍의 GCD(Greatest Common Division) 합 구하기
+	// 최대공약수 구하기
+	// 2 4 2 4  10 10 10  10 20  10
+	int t;
+	cin >> t;
 
-	int n, m;
-	cin >> n >> m;
+	vector<int> vec;
+	vector<int> gcd;
 
-	//일일히 순회하면서 n! 값 안에 있는 2와 5의 개수를 찾으면
-	//시간초과에 걸린다.
-	//최대 2,000,000,000 이 들어가므로 O(n)번 순회하면 이미 20초다
-	//2의 배수를 찾는 방법을 에라토스체를 통해서 떠올려본다.
-	//2의 배수는 2,4,6,8,10...이다.
-	//N!에 해당 값들이 있다고 가정하고 2로 나눠본다.
-	//2 * (1,2,3,4,5,6...)라는 결과가 된다.
-	//여기서 4,8,16과 같은 2의 제곱수에서 한번더 2를 추출할 수 있다.
-	//즉 2의 개수를 찾기위해서
-	// n/2 + n/4 + ... until n >= 2^x 까지 시행하면 될 것이다.
-	// n뿐만 아니라 m, n-m에 대해서도 시행하기위해 함수 형태로 만들어본다.
-	CountTwoFive(store[0], store[1], n);
-	SubtractTwoFive(store[0], store[1], m);
-	SubtractTwoFive(store[0], store[1], n-m);
+	while (t > 0)
+	{
+		vec.clear();
 
-	//2와 5중에서 더 적은 값을 출력해준다.
-	cout << min(store[0], store[1]);
+		int n;
+		cin >> n;
+
+		for (int i = 0; i < n; i++)
+		{
+			int input;
+			cin >> input;
+			vec.push_back(input);
+		}
+		//1, 000, 000 가 100개 주어질경우
+		//100!이므로 longlong으로 만들어준다.
+		//총 합의 범위는 10*99/2*1,000,000 이므로 49억이다??
+		long long total = 0;
+		for (int i = 0; i < vec.size(); i++)
+		{
+			for (int j = i + 1; j < vec.size(); j++)
+			{
+				total += GCD(vec[i], vec[j]);
+			}
+		}
+		//3 125 15 25
+		cout << total;
+		if (t > 1)
+		{
+			cout << "\n";
+		}
+		t--;
+	}
+	
+
+
 	return 0;
 }
