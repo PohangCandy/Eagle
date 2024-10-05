@@ -1,83 +1,63 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-//LIS를 구할때, 자신이 마지막으로 포함시키는 수열에 대한 정보를 가지고 있어야한다.
-// 10 20 10 30 20 50 일 경우
-// 10	10
-// 20	10,20 
-// 10	10 
-// 30	10,20,30
-// 20	10,20
-// 50	10,20,30,50
+// 연속된 수 중에서 가장 합이 큰 최대 수열
+// 10, -4, 3, 1, 5, 6, -35, 12, 21, -1 
+// 뒤에서부터 시작해서 합이 양수가 된다면
+// 만약 input이 양수라면
+// 더해주면 되지 않을까?
 
-// 10 20 1 2 3 4 5 20
-// 10	10
-// 20	10,20
-// 1	1
-// 2	1,2
-// 3	1,2,3
-// 4	1,2,3,4
-// 20	1,2,3,4
-// 입력보다 작은 수 중 LIS가 가장 큰 친구의 수열
-//  + push_back(입력)을 저장한다.
-// 
-// vector<int> 자료형을 저장하는 
-// 배열를 만들어서 저장하는 공간에 담아본다.
-// 그냥 수열만 담아주고, 해당 수열의 사이즈로 비교해도 가능하다.
-
-
-void RR(vector<int> arr[], int N)
+void RR(vector<pair<int, int>> &vec)
 {
-	if (arr[N].size() == 0)
+	for (int i = vec.size() - 1; i > 0; i--)
 	{
-		arr[N].push_back(N);
-	}
-
-	for (int i = 1; i <= (N - 1); i++)
-	{
-		if (arr[i].size() >= arr[N].size())
+		// 즉, 뒤에서 가져온 연속된 값의 최댓값이
+		// 양수라면 앞의 연속되는 값에 그 값을 더한다.
+		if(vec[i].second > 0)
 		{
-			//LIS의 수열을 초기화시킨다.
-			arr[N].clear();
-			arr[N] = arr[i];
-			arr[N].push_back(N);
+		  // 자신의 원값 + 뒤에 수에서 가져온 연속된 값의 최댓값
+		  vec[i - 1].second = vec[i - 1].first + vec[i].second;
 		}
 	}
 }
 
-vector<int> test[1001];
+// pair<int 입력 값, int 현위치 연속의 최댓값>을 저장해준다.
+vector<pair<int,int>> vec;
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int N;
-	cin >> N;
-	for (int i = 0; i < N; i++)
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++)
 	{
 		int input;
 		cin >> input;
-		RR(test, input);
+		vec.push_back(make_pair(input, input));
 	}
 
+	RR(vec);
+
+	//최댓값 초기화
 	int max = 0;
-	int index = 1;
-	for (int i = 1; i <= 1000; i++)
+	if (!vec.empty())
 	{
-		if (test[i].size() > max)
+		max = vec[0].second;
+	}
+
+	for (auto& a : vec)
+	{
+		if (a.second > max)
 		{
-			max = test[i].size();
-			index = i;
+			max = a.second;
 		}
 	}
 
-	cout << test[index].size() << "\n";
-	for (auto& a : test[index])
-	{
-		cout << a << " ";
-	}
 
+	// 최종적으로 vector내의 가장 큰 값을 출력한다. 
+	cout << max;
 
 	return 0;
 }
