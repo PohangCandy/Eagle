@@ -1,63 +1,71 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-// 연속된 수 중에서 가장 합이 큰 최대 수열
-// 10, -4, 3, 1, 5, 6, -35, 12, 21, -1 
-// 뒤에서부터 시작해서 합이 양수가 된다면
-// 만약 input이 양수라면
-// 더해주면 되지 않을까?
+// 1 1
+// 2 1,1
+// 3 1,1,1
+// 4 4
+// 5 4,1
+// 6 4,1,1
+// 7 4,1,1,1
+// 8 4,4
+// 9 9
+// 10 9 1
+// 11 9 1 1
+// 12 9 1 1 1
+// 12 4 4 4
+// 12에 가장 가까운 제곱수는 9이지만 최소 항을 가지는 수열이 아니다.
+// 12보다 적은 제곱수 중에 제곱수를 뺀 나머지에서
+// 최소항을 가지도록 만드는 수를 찾아야한다.
 
-void RR(vector<pair<int, int>> &vec)
+
+
+int RR(int arr[], int input)
 {
-	for (int i = vec.size() - 1; i > 0; i--)
+	arr[0] = 0;
+	arr[1] = 1;
+// 항을 최대한 많이 가질경우 
+// 1로 나눈 몫과 같다. 
+	arr[input] = input;
+
+//입력받은 수보다 작거나 같은 수들에 대한 최소항을 구해서 저장한다.
+	for (int i = 2; i <= input; i++)
 	{
-		// 즉, 뒤에서 가져온 연속된 값의 최댓값이
-		// 양수라면 앞의 연속되는 값에 그 값을 더한다.
-		if(vec[i].second > 0)
+		int min = i;
+		//완전제곱수인 경우 최소항은 1
+		//그외에는 제곱수와 나머지를 이루는 수의 최소항의 개수를 비교해서
+		//그 중 최솟값을 저장한다.
+		for (int j = 1; j * j <= i; j++)
 		{
-		  // 자신의 원값 + 뒤에 수에서 가져온 연속된 값의 최댓값
-		  vec[i - 1].second = vec[i - 1].first + vec[i].second;
+			if (j * j == i)
+			{
+				min = 1;
+			}
+			else if (min > (arr[j * j] + arr[i - (j * j)]))
+			{
+				min = (arr[j * j] + arr[i - (j * j)]);
+			}
 		}
+		arr[i] = min;
 	}
+
+	return arr[input];
+	 
 }
 
-// pair<int 입력 값, int 현위치 연속의 최댓값>을 저장해준다.
-vector<pair<int,int>> vec;
+// 각 수에 대한 최소 항을 기억하도록 하는 배열
+int arr[100001];
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int n;
-	cin >> n;
-	for (int i = 0; i < n; i++)
-	{
-		int input;
-		cin >> input;
-		vec.push_back(make_pair(input, input));
-	}
+	int N;
+	cin >> N;
 
-	RR(vec);
+	cout << RR(arr, N);
 
-	//최댓값 초기화
-	int max = 0;
-	if (!vec.empty())
-	{
-		max = vec[0].second;
-	}
-
-	for (auto& a : vec)
-	{
-		if (a.second > max)
-		{
-			max = a.second;
-		}
-	}
-
-
-	// 최종적으로 vector내의 가장 큰 값을 출력한다. 
-	cout << max;
 
 	return 0;
 }
