@@ -1,75 +1,32 @@
 #include <iostream>
 using namespace std;
-// n = 1일때,
-// 아무것도 고르지 않을 경우의 인덱스 0,
-// 위쪽을 고르는 경우 인덱스 1,
-// 아래쪽을 고르는 경우 인덱스 2라 한다.
-// 아무것도 고르지 않았을 때, 가격의 최댓값
-// arr[1][0] = 0;
-// arr[1][1] = 50;
-// arr[1][2] = 30;
-// arr[2][0] = max(arr[1][1], arr[1][2])
-// arr[2][1] += arr[1][2]
-// arr[2][2] += arr[1][1]
-// arr[3][0] = max(arr[2][1],arr[2][2])
-// arr[3][1] += max(arr[2][2], arr[2][0])
-// arr[3][2] += max(arr[2][1], arr[2][0])
-
-// 점화식
-// arr[n][0] = max(arr[n-1][1],arr[n-1][2])
-// arr[n][1] += max(arr[n-1][2],arr[n-1][0])
-// arr[n][2] += max(arr[n-1][1],arr[n-1][0])
+// 포도주를 연속으로 3잔 마실 순 없다.
+// 놓여있는 포도주를 최대한 많이 먹자.
+// 1잔 놓여있는 경우
+// 6 -> 6
+// 2잔 놓여있는 경우
+// 6 6 -> 12
+//3잔 놓여있는 경우
+// 6 6 10
+// 각 잔의 순서에 따라 1,2,3으로 표현한다.
+// 1,2 1,3 2,3중에 가장 많은 값을 찾는다.
+// 앞에 두잔을 선택하는 경우, 앞에서 한잔, 뒤에서 한잔 고르는 경우
+// 놓여진 n개의 잔에서 최대로 마실 수 있는 와인의 양을 배열에 저장한다면
+// arr[1][1] , 1잔중에 1잔 마실때 마실 수 있는 최대 양
+// arr[1][1] = arr[1][1]
+// arr[2][2] = arr[1][1] + arr[2][1]
+// arr[2][1] = max(arr[1][1],arr[2][1])
+// arr[3][2] = max(arr[2][2],arr[3][1] + arr[2][1])
 // 
-// n * 2개의 스티커에서 가겨이 최대가 되는 값
-// return max(arr[n][1], arr[n][2])
+// 문제는 연속 3잔이다..
 
-int arr[100001][3];
-
-int RR(int arr[][3], int n)
-{
-	arr[1][0] = 0;
-
-	for (int i = 2; i <= n; i++)
-	{
-		//초기화
-		arr[i][0] = 0;
-
-		arr[i][0] = max(arr[i - 1][1], arr[i - 1][2]);
-		arr[i][1] += max(arr[i - 1][2], arr[i - 1][0]);
-		arr[i][2] += max(arr[i - 1][1], arr[i - 1][0]);
-	}
-
-	return max(arr[n][1], arr[n][2]);
-}
+int arr[10000][9999];
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int T;
-	cin >> T;
-	for (int i = 0; i < T; i++)
-	{
-		int n;
-		cin >> n;
-		//스티커 윗줄의 가격
-		for (int i = 1; i <= n; i++)
-		{
-			int input;
-			cin >> input;
-			arr[i][1] = input;
-		}
-		//스티커 아랫줄의 가격
-		for (int j = 1; j <= n; j++)
-		{
-			int input;
-			cin >> input;
-			arr[j][2] = input;
-		}
-
-		cout << RR(arr, n) << "\n";
-	}
 
 
 	return 0;
