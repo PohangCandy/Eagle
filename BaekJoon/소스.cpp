@@ -1,52 +1,59 @@
 #include <iostream>
 using namespace std;
-// 삼각형을 타도 내려가면서 최대합 구하기
-// 과연 어떻게 왼쪽,오른쪽 삼각형을 타고 내려갈 수 있을까?
-// 1번째로 입력받은 값은 2,3번째로 갈 수 있다.
-// 1 -> 2,3
-// 2 -> 4,5
-// 3 -> 5,6
-// 4 -> 7,8
-// 5 -> 8,9
-// 6 -> 9,10
+//가장 긴 감소하는 부분 수열의 길이를 구한다.
+//그냥 자기보다 큰 수가 있으면 count를 증가시켜서
+//자신의 인덱스에 해당하는 배열에 저장해두면 되지 않을까?
+
+
+//시간제한
+// 최대 N은 10^3이므로 이중 포문에서 걸릴 수 있는 최대 시간
+// 10^6
+//   
+//메모리 
+// 4바이트 int형 1000개 저장하는 배열 2개, 8kb
 //
-//10 15
-//8 1 5
-//18 11 16 20
+//자료형
+//최대 길이 1000 < 2*10^9이므로 int형으로 작성 
 
-//삼각형을 이루는 총 항의 개수 = n*(n+1)/2
-// 
-//가장 마지막 항arr[n*(n+1)/2]에서
-//삼각형의 윗 꼭지점에 접근하려면
-//arr[n*(n+1)/2 - n] += max(arr[n*(n+1)/2],arr[n*(n+1)/2 - 1])
-//이 작업을 각 줄의 두번째 항까지 반복한다.
-//그 다음 윗 줄로 올라간다.
-//최종적으로 arr[1]에 남은 값이 최댓값이 된다.
-
-int arr[500 * 501 / 2 + 1];
-
-int RR(int arr[], int n)
-{
-	for (n; n > 1; n--)
-	{
-		arr[n * (n + 1) / 2 - n] += max(arr[n * (n + 1) / 2], arr[n * (n + 1) / 2 - 1]);
-	}
-}
-
+int arr[1001];
+int Count[1001];
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int n;
-	cin >> n;
-	for (int i = 1; i <= n; i++)
+	int N;
+	cin >> N;
+
+	for (int i = 1; i <= N; i++)
 	{
-		arr[i] = 0;
+		int input;
+		cin >> input;
+		arr[i] = input;
+		Count[i] = 1;
+		for (int j = i - 1; j >= 1; j--)
+		{
+			if (arr[j] > arr[i])
+			{
+				if (Count[j] + 1 > Count[i])
+				{
+					Count[i] = Count[j] + 1;
+				}
+			}
+		}
 	}
 
-	cout << RR(arr, n);
+	int maxCount = Count[1];
+	for (int i = 1; i <= N; i++)
+	{
+		if (Count[i] > maxCount)
+		{
+			maxCount = Count[i];
+		}
+	}
+
+	cout << maxCount;
 
 	return 0;
 }
