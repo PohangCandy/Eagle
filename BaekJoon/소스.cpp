@@ -1,63 +1,73 @@
 #include <iostream>
 using namespace std;
 
-// tile[n] , 3*n에 타일을 까는 경우의 수
+//집 색칠하기
+// RGB색으로 칠하는데 최솟값이 되도록한다.
+// 먼저 입력 받은 값을, 각각
+// [0][1][2]에 담는 배열을 만든다.
 // 
-// 3 * n의 타일을 채운다고 가정했을때
-// n%2 == 1이라면, 블록으로 다 채울 수 없음으로 0을 출력해준다.
+// 옆에 있는 친구랑 색이 달라야한다.
+// 두번째 집부터 R일때 첫번째 집과의 합이 최소가 되는 집을 나타낸다.
+//마지막에만 살짝 틀면 되지 않을까?
+// 처음 시작하는 빨간 색으로 시작하는 끝나는 경우의 수는
+// 초록, 파랑이어야한다.
+// 초록, 파랑으로 끝날 경우 시작이 초록, 파랑이면 안된다.
+// 처음을 빨강으로 강제적으로 만들어준다.
+// 초록,파랑색 집의 비용을 최대비용이 되도록 만든다.
+// 집의 최대 비용이 1000,집의 개수가 1000이므로
+//최대 나올 수 있는 비용은 1000*1000이다.
 
-// n%2 == 0일 경우, 
-// 3 * 2타일을 채우는 경우의 수는 3가지이다.
-// tile[2] = 3;
-// 
-// 3 * 4의 타일을 채우는 경우
-// 3*2 타일과 3*2타일로 구분했을때 나올 수 있는 경우의 수는 3*3 = 9가지이다.
-// 여기에 추가적으로 두 블록의 경게를 구분짓지 않고 들어올수 있는 2가지 모양이 더 있다.
-// tile[4] = tile[2] * tile[2] + 2
 
-// 3 * 6의 타일을 채우는 경우는
-// 3*2 + 3*4, 3* 4 + 3*2, 3*6으로 나눌 수 있다.
-// 이들 각각이 중복되지 않으려면
-// 3*2 + 3*4에서는 끝에 3* 4 + 3*2와 마찬가지로 3*2형태로 끝나면 안되는 경우이다.
-// 즉, 3*4의 형태가 두 블록의 경계를 구분짓지 특이한 모양 2가지일 경우이다.
-// 그리고 추가적으로 2가지의 트깅한 모양이 있다.
-// 
-// tile[6] = tile[4] * tile[2] + tile[2] * 2 + 2
+int arr[1001][3];
+int price[1001][3];
 
-//  3 * 8의 타일을 채우는 경우
-// 3*2 + 3*6, 3* 4 + 3*4, 3*6 + 3*2, 3 * 8으로 나눌 수 있다.
-// 이들 각각이 중복되지 않으려면
-// 3* 4 + 3*4는 3*2형태로 끝나면 안된다.
-// 3*2 + 3*6는 3*4나 3*2형태로 끝나면 안된다.
-// tile[8] = tile[6] * tile[2] + tile[4] * 2 + tile[2] * 2 + 2
+void RR(int arr[][3], int price[][3], int n);
 
-//이를 점화식으로 나타내준다.
-//tile[n] = tile[n-2] * tile[2] + tile[n-4] * 2 + ... + 2이므로
-//tile[0] = 1, 2 = tile[0] * 2으로 작성해준다.
-int tile[31];
-
-int RR(int tile[],int n)
+int setting(int arr[][3],int price[][3],int n)
 {
-	tile[0] = 1;
-	tile[1] = 0;
-	tile[2] = 3;
-	tile[3] = 0;
-	for (int i = 4; i <= n; i++)
+	int minimum = 1000 * 1000;
+
+	for (int firstColor = 0; firstColor <= 2; firstColor++)
 	{
-		if (i % 2 != 0)
+		for (int i = 0; i <= 2; i++)
 		{
-			tile[i] = 0;
-			continue;
+			if (i == firstColor)
+			{
+				price[1][firstColor] = arr[1][firstColor];
+			}
+			else
+			{
+				price[1][i] = 1000 * 1000;
+			}
 		}
 
-		tile[i] = tile[i - 2] * tile[2];
-		for (int j = i - 4; j >= 0; j -= 2)
+		RR(arr, price, n);
+
+		for (int i = 0; i <= 2; i++)
 		{
-			tile[i] += tile[j] * 2;
+			if (i == firstColor)
+			{
+				continue;
+			}
+			else
+			{
+				minimum = min(minimum, price[n][i]);
+			}
 		}
 	}
 
-	return tile[n];
+	return minimum;
+}
+
+void RR(int arr[][3], int price[][3], int n)
+{
+
+	for (int i = 2; i <= n; i++)
+	{
+		price[i][0] = arr[i][0] + min(price[i - 1][1], price[i - 1][2]);
+		price[i][1] = arr[i][1] + min(price[i - 1][0], price[i - 1][2]);
+		price[i][2] = arr[i][2] + min(price[i - 1][0], price[i - 1][1]);
+	}
 }
 
 int main()
@@ -65,10 +75,19 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int n;
-	cin >> n;
+	int N;
+	cin >> N;
+	for (int i = 1; i <= N; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			int input;
+			cin >> input;
+			arr[i][j] = input;
+		}
+	}
 
-	cout << RR(tile, n);
+	cout << setting(arr,price, N);
 
 	return 0;
 }
