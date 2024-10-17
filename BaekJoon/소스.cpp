@@ -106,7 +106,7 @@ int main()
 					arr[1] = arr[0] + 1;
 					arr[0] = 0;
 				}
-				else if (k + 1 < N && basicWord == anipang[i][k+2] && anipang[i][k-1] == anipang[i][k + 1])
+				else if (basicWord == anipang[i][k-1] && anipang[i][k-1] == anipang[i][k + 1])
 				{
 					arr[1] = arr[0] + 1;
 					M = max({ M,arr[0], arr[1]});
@@ -145,7 +145,7 @@ int main()
 					arr[1] = arr[0] + 1;
 					arr[0] = 0;
 				}
-				else if (k + 1 < N && basicWord == anipang[k + 1][i])
+				else if (basicWord == anipang[k + 1][i] && anipang[k + 1][i]  == anipang[k - 1][i])
 				{
 					arr[1] = arr[0] + 1;
 					M = max({ M,arr[0], arr[1] });
