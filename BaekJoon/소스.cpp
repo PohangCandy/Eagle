@@ -1,170 +1,193 @@
 #include <iostream>
-#include <algorithm>
 using namespace std;
 
-//애니팡
+// 리모컨 버튼 최소로 눌러서 원하는 채널 N으로 이동하기
+// 고장난 버튼을 제거하고 최소 이동 경로 찾기
+// 시작 지점은 100
 
-/*
-힌 줄 바꿔서, 가장 긴 사탕이 있는 줄 출력하기
-사탕을 배열에 담은 뒤에, 뒤에 있거나 아래에 있는 경우, count를 증가시킨다.
-max가 되는 count 값을 저장시킨다.
+//  80000
+//	77777	   (5)
+//	 2223	(2223)
 
-먼저 사탕을 최대로 넣을 수 있는 배열을 만든다.
-입력한 입력 값만큼, 가로 배열과 세로 배열의 값을 증가시킨다.
+//1. 입력받은 N에 남아있는 숫자 버튼을 가지고 최대한 가까이 접근하기
+//2. 위아래 버튼으로 입력받은 수에 접근하기
 
-색상 4개에 대한 배열을 따로 만든다.
+// 이동하고자 하는 채널이 n이라면
+// 1. 위아래버튼으로 접근하는 경우의 수는 n - 100이다.
+// 
+// 2. 최대한 가까이 접근한 수가 s일때
+// 위아래 버튼을 사용하는 경우의 수는 n-s이다.
+//
+// max(n - s + s의 자릿수, n - 100)을 한 결과가
+// 최종 답이 된다.
 
-i,j번째 요소에서
-가로와 세로 줄을 계속 세면되지 않을까?
-가로로 증가시키면서 최대 몇개가 연속될 수 있는지
-조사하고
-세로로 증가시키면서 최대 몇개가 될 수 있는지
-조사해본다.
+// n > s인 경우
+// 더 큰 자릿수가 되거나, 같은 자릿수 중에 나올 수 있는 가장 최소한으로 큰 값이 앞자리에 나온다.
 
-80%에서 멈춘다.
-반례가 발생하고 있기때문에
-예외가 있는지 모든 사항을 고려해본다.
+//구해야하는 값은 두가지이다.
+// 입력받은 수에 가장 근접한 두 수를 구한다.
+// 하나의 수는 입력받은 값보다 작은 수 중에서 구한다.
+// 하나의 수는 입력받은 값보다 큰 수 중에서 구한다.
 
-예외적인 경우가 있다.
+//리모컨에 있는 버튼의 고장 유무를 나타낸다. 
+bool remocon[10];
 
-p p p c p p p p
-z y z z y z y z
-위와 같은 경우 
-p p p이후에 오는 c,p를 교환하는 경우
-p p p (p c) p p p 로 교체하면 앞 줄은 p가 4개, 뒷 줄은 3개가 된다.
-p p (c p) p p p p 로 교체하면 앞 줄은 p가 3개, 뒷 줄은 5개가 된다.
-
-가로를 검사할때
-for(int i  = 0 ; i < N; i++)
-for(int j = 0 ; i < N ; j++)
-for(int k = j+1; k < N; k++)
-[i][j]번째 요소와 [i][k]번째 요소를 비교했을때
-
-[i][j] == [i][k]라면, 연속된 수를 저장하는 배열에 담아준다.
-arr[0] ++;
-arr[1]++, 체인지를 한번 선언한 경우의 뱌열도 똑같이 증가한다.
-
-[i][j] != [i][k]리면,
-자리 체인지를 통해 연속될 수 있는지 먼저 알아본다.
-
-1. 상,하 체인지로 연속되는 경우 
-[i][j] == [i+1][k] || [i][j] == [i-1][k]
-arr[1] = arr[0] + 1; 지금까지 연속된 합 + 체인지를 통해 더해진 1
-연속된 수를 저장하는 배열은 초기화
-arr[0] = 0 ;
-
-2. 좌, 우 체인지로 연속되는 경우
-[i][j] == [i][k+1] == [i][k-1]인 경우
-k = 1일때
-P C P 같은 경우를 말한다.
-
-*/
-
-char anipang[51][51];
-
-//이미 한 번 바꿨을 경우와, 한 번도 안 바꿨을 경우를 고려해준다.
-int arr[2];
+int result = 0;
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
+	//기존의 리모컨은 모두 작동가능
+	for (auto& a : remocon)
+	{
+		a = true;
+	}
+
 	int N;
 	cin >> N;
-
-	for (int i = 1; i <= N; i++)
+	
+	int numOfBrakedKeyboard;
+	cin >> numOfBrakedKeyboard;
+	for (int i = 0; i < numOfBrakedKeyboard; i++)
 	{
-		for (int j = 1; j <= N; j++)
-		{
-			char c;
-			cin >> c;
-			anipang[i][j] = c;
-		}
+		int remoconNum;
+		cin >> remoconNum;
+		remocon[remoconNum] = false;
 	}
 
-	int M = 1;
+	//100번 채널에서 시작했을때
+	//위,아래로 움직이는 버튼만 가지고 찾는 경우의 수
+	result = abs(N - 100);
 
-	//가로에 대해서 먼저 조사
-
-	for (int i = 1; i <= N; i++)
+	//N보다 적은 값 중 리모컨으로 접근 할 수 있는 최댓값
+	for(int i = N; i >= 0; i--)
 	{
-		for (int j = 1; j <= N; j++)
+		int c = i;
+		//예외처리 필요
+		// i == 0이고 0이 고장난 경우
+		// 즉,N 아래에서 접근 할 수 있는 수가 없는 경우
+		// 즉시 break를 걸어준다.
+		// 0이 고장나지 않았을 경우
+		// 
+		if (c == 0)
 		{
-			arr[0] = 1;
-			arr[1] = 1;
-			char basicWord = anipang[i][j];
-			for (int k = j + 1; k <= N; k++)
+			if (remocon[0] == false)
 			{
-				if (basicWord == anipang[i][k])
-				{
-					arr[0]++;
-					arr[1]++; 
-				}
-				else if (basicWord == anipang[i + 1][k] || basicWord == anipang[i - 1][k])
-				{
-					arr[1] = arr[0] + 1;
-					arr[0] = 0;
-				}
-				else if (basicWord == anipang[i][k-1] && anipang[i][k-1] == anipang[i][k + 1])
-				{
-					arr[1] = arr[0] + 1;
-					M = max({ M,arr[0], arr[1]});
-					arr[1] = 1;
-					arr[0] = 0;
-				}
-				else
-				{
-					//p p p c p p p p
-					//c c p c c p
-					arr[1] = 0;
-					arr[0] = 0;
-				}
-				M = max({M,arr[0], arr[1]});
+				break;
+			}
+			// 접근 가능한 수가 0이라면
+			// 0에서 위아래로 이동하는 경우와
+			// 현재 결과를 비교해준다.
+			else
+			{
+				//0에서 이동하는데 걸리는 위아래 버튼 N번
+				//0을 입력하므로 +1
+				result = min(result, N + 1);
 			}
 		}
-	}
-
-	//세로에 대한 조사
-	for (int i = 1; i <= N; i++)
-	{
-		for (int j = 1; j <= N; j++)
+		while (c != 0)
 		{
-			arr[0] = 1;
-			arr[1] = 1;
-			char basicWord = anipang[j][i];
-			for (int k = j + 1; k <= N; k++)
+			//고장난 리모컨이 아닐경우 계속해서 누른다.
+			if (remocon[c % 10])
 			{
-				if (basicWord == anipang[k][i])
-				{
-					arr[0]++;
-					arr[1]++;
-				}
-				else if (basicWord == anipang[k][i+1] || basicWord == anipang[k][i-1])
-				{
-					arr[1] = arr[0] + 1;
-					arr[0] = 0;
-				}
-				else if (basicWord == anipang[k + 1][i] && anipang[k + 1][i]  == anipang[k - 1][i])
-				{
-					arr[1] = arr[0] + 1;
-					M = max({ M,arr[0], arr[1] });
-					arr[1] = 1;
-					arr[0] = 0;
-				}
-				else
-				{
-					arr[1] = 0;
-					arr[0] = 0;
-				}
-
-				M = max({ M,arr[0], arr[1] });
+				c /= 10;
 			}
+			else
+			{
+				break;
+			}
+		}
+
+		//고장난 리모컨일 경우
+		if (c != 0)
+		{
+			continue;
+		}
+		//모든 리모컨번호가 살아있는 번호인 경우
+		else
+		{
+			//자릿수를 구해준다.
+			int count = 0;
+			while (i != 0)
+			{
+				i /= 10;
+				count++;
+			}
+
+			//자릿수와 위아래 이돟하는 경우의 수를 더한 합과
+			//이전 결과 중 더 작은 값으로 결정한다.
+			result = min(result, abs(N - i) + count);
+			//가장 첫번째로 구한 값이 가장 근접한 값이므로
+			//break를 통해 for문을 빠져나와도 상관없다.
+			break;
 		}
 	}
 
-	cout << M;
+	//N보다 큰 값 중 리모컨으로 접근 할 수 있는 최댓값
+	for (int i = N; i <= 500000; i++)
+	{
+		int c = i;
+		//예외처리 필요
+		// i == 500000이고 0
+		// 즉,N 아래에서 접근 할 수 있는 수가 없는 경우
+		// 즉시 break를 걸어준다.
+		// 0이 고장나지 않았을 경우
+		// 
+		if (c == 0)
+		{
+			if (remocon[0] == false)
+			{
+				break;
+			}
+			// 접근 가능한 수가 0이라면
+			// 0에서 위아래로 이동하는 경우와
+			// 현재 결과를 비교해준다.
+			else
+			{
+				//0에서 이동하는데 걸리는 위아래 버튼 N번
+				//0을 입력하므로 +1
+				result = min(result, N + 1);
+			}
+		}
+		while (c != 0)
+		{
+			//고장난 리모컨이 아닐경우 계속해서 누른다.
+			if (remocon[c % 10])
+			{
+				c /= 10;
+			}
+			else
+			{
+				break;
+			}
+		}
 
+		//고장난 리모컨일 경우
+		if (c != 0)
+		{
+			continue;
+		}
+		//모든 리모컨번호가 살아있는 번호인 경우
+		else
+		{
+			//자릿수를 구해준다.
+			int count = 0;
+			while (i != 0)
+			{
+				i /= 10;
+				count++;
+			}
+
+			//자릿수와 위아래 이돟하는 경우의 수를 더한 합과
+			//이전 결과 중 더 작은 값으로 결정한다.
+			result = min(result, abs(N - i) + count);
+			//가장 첫번째로 구한 값이 가장 근접한 값이므로
+			//break를 통해 for문을 빠져나와도 상관없다.
+			break;
+		}
+	}
 
 	return 0;
 }
