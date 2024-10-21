@@ -47,7 +47,7 @@ void dfs(int y, int x, int cnt, int sum)
 			int ny = y + dy[i];
 
 			//범위를 벗어나지 않도록 해준다.
-			if (nx < 0 || ny < 0 || nx > M || ny > N) continue;
+			if (nx < 0 || ny < 0 || nx > M - 1 || ny > N - 1) continue;
 
 			//한번 방문한 노드는 재방문 하지 않는다.
 			if (visited[ny][nx] == 1) continue;
@@ -87,7 +87,7 @@ int main()
 		{
 			//방문한 노드로 표시
 			visited[i][j] = 1;
-			dfs(i , j , 1, rectangle[i][j]);
+			dfs(i, j, 1, rectangle[i][j]);
 			//검색이 끝난후엔 다시 초기화
 			visited[i][j] = 0;
 		}
@@ -102,12 +102,12 @@ int main()
 		{
 			// 상,하,좌,우 중에서 가장 작은 값 1개를 제외하고
 			// 3가지를 고르는 경우
-			int m = 501;
+			int m = 1001;
 			int sum = 0;
 			for (int k = 0; k < 4; k++)
 			{
 				//범위 밖의 값은 0으로 받아준다.
-				if ((i + dy[k]) < 0 || (j + dx[k]) < 0)
+				if ((i + dy[k]) < 0 || (j + dx[k]) < 0 || i + dy[k] > N - 1 || j + dx[k] > M - 1)
 				{
 					m = 0;
 					sum += 0;
@@ -115,10 +115,10 @@ int main()
 				}
 
 				sum += rectangle[i + dy[k]][j + dx[k]];
-				m = min(m,rectangle[i + dy[k]][j + dx[k]]);
+				m = min(m, rectangle[i + dy[k]][j + dx[k]]);
 			}
 
-			result = max(result, rectangle[i][j]+ sum - m);
+			result = max(result, rectangle[i][j] + sum - m);
 		}
 	}
 
