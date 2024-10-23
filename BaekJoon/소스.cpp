@@ -1,50 +1,39 @@
 //아이디어
-// 그냥 주어진 depth까지 
-// 방문여부와 상관없이 탐색하도록 만들어주면 되지 않을까?
+// dfs를 돌면서, 기준이 되는 노드보다 
+// 크거나같은 노드들을 모두 출력해준다.
+// 
+// 걍 재귀함수 써도 쉽게 풀릴거 같은데?
+// i부터 N까지 출력하도록 하면 되지 않을까?
+// 
 //시간복잡도
-// N^M이므로 최대 7 ^ 7 -> 10^7보다 작으므로 1초 이내
+// N! = 8! - > 10^8이하이므로 1초 이내
+// 
 //자료구조
 // 메모리
-//	방문여부 배열을 사용하지 않는다.
-//  int 자료형만 표시한다.
-//  방문 노드 누적 최대 벡터 int * 7
+//  재방문과는 상관없이 
 // 자료형
-//  최대 7
-
 #include <iostream>
 #include <vector>
 using namespace std;
 
-int N, M;
+//RecursiveFunction, 재귀함수
+//재귀를 끝낼 조건
+// int n이 N이되면 stop
 vector<int> vec;
+int N, M;
 
-//dfs가 중단될 조건
-// depth에 도달하면 멈춘다.
-//파라미터
-// 현재 높이를 저장할 int m
-void dfs(int m)
+void RF(int n)
 {
-	if (m == M)
+	if (n == N)
 	{
+		vec.push_back(n);
 		for (auto& a : vec)
 		{
 			cout << a << " ";
 		}
 		cout << "\n";
 	}
-	else if (m > M)
-	{
-		cout << "out of depth";
-	}
-	else
-	{
-		for (int i = 1; i <= N; i++)
-		{
-			vec.push_back(i);
-			dfs(m + 1);
-			vec.pop_back();
-		}
-	}
+
 }
 
 int main()
@@ -52,14 +41,7 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	cin >> N >> M;
 
-	for (int i = 1; i <= N; i++)
-	{
-		vec.push_back(i);
-		dfs(1);
-		vec.pop_back();
-	}
 
 	return 0;
 }
