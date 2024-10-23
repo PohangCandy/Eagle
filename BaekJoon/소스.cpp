@@ -1,32 +1,65 @@
-// 아이디어
-//  루트 노드를 증가시키면서 방문하지 않은 노드를 방문하자.
-//  DFS로 풀이하면 될 것 같다.
-//  입력받은 N의 가지를 만들고
-//  높이는 M이 된다.
-// 
-// 시간복잡도
-//  각 가지는 N, 높이는 M이므로 
-//  nPm의 순열이 된다.
-// 
+//아이디어
+// 그냥 주어진 depth까지 
+// 방문여부와 상관없이 탐색하도록 만들어주면 되지 않을까?
+//시간복잡도
+// N^M이므로 최대 7 ^ 7 -> 10^7보다 작으므로 1초 이내
+//자료구조
 // 메모리
-//  방문 여부를 저장할 int형 8배열
-//  수를 저장할 int형 8배열
-// 
+//	방문여부 배열을 사용하지 않는다.
+//  int 자료형만 표시한다.
+//  방문 노드 누적 최대 벡터 int * 7
 // 자료형
-//  8을 넘지 않으므로 int
-
-int visited[8] = { 0 };
+//  최대 7
 
 #include <iostream>
+#include <vector>
 using namespace std;
+
+int N, M;
+vector<int> vec;
+
+//dfs가 중단될 조건
+// depth에 도달하면 멈춘다.
+//파라미터
+// 현재 높이를 저장할 int m
+void dfs(int m)
+{
+	if (m == M)
+	{
+		for (auto& a : vec)
+		{
+			cout << a << " ";
+		}
+		cout << "\n";
+	}
+	else if (m > M)
+	{
+		cout << "out of depth";
+	}
+	else
+	{
+		for (int i = 1; i <= N; i++)
+		{
+			vec.push_back(i);
+			dfs(m + 1);
+			vec.pop_back();
+		}
+	}
+}
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int N, M;
 	cin >> N >> M;
+
+	for (int i = 1; i <= N; i++)
+	{
+		vec.push_back(i);
+		dfs(1);
+		vec.pop_back();
+	}
 
 	return 0;
 }
