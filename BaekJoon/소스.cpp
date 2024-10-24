@@ -1,32 +1,30 @@
 //아이디어
-// dfs를 돌면서, 기준이 되는 노드보다 
-// 크거나같은 노드들을 모두 출력해준다.
-// 
-// 근데 걍 재귀함수 써도 쉽게 풀릴거 같은데?
-// i부터 N까지 출력하도록 하면 되지 않을까?
+// 중복을 허용한 재귀함수 출력하기
 // 
 //시간복잡도
-// N! = 8! - > 10^8이하이므로 1초 이내
+// N^M - > 최대 7^7
 // 
 //자료구조
 // 메모리
-//  재방문과는 상관없이 진행하므로 int 변수만 사용
-//  벡터에 들어가는 최대 메모리 int * 8 = 32byte
+//  벡터 int * 7
 // 자료형
-//	최대 8
+//  int형
+
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
-//RecursiveFunction, 재귀함수
-//재귀를 끝낼 조건
-// int n이 N이되면 stop
+vector<int> arr;
 vector<int> vec;
+
 int N, M;
 
-void RF(int s, int height)
+//재귀함수가 stop할 조건
+// 높이 M에 도달하면 stop
+void RF(int h)
 {
-	if (height == M)
+	if (h == M)
 	{
 		for (auto& a : vec)
 		{
@@ -34,16 +32,16 @@ void RF(int s, int height)
 		}
 		cout << "\n";
 	}
-	else if (height > N)
+	else if (h > M)
 	{
 		cout << "out of height";
 	}
 	else
 	{
-		for (int i = s; i <= N; i++)
+		for (int i = 0; i < N; i++)
 		{
-			vec.push_back(i);
-			RF(i, height + 1);
+			vec.push_back(arr[i]);
+			RF(h + 1);
 			vec.pop_back();
 		}
 	}
@@ -55,11 +53,19 @@ int main()
 	cin.tie(0);
 
 	cin >> N >> M;
-
-	for (int i = 1; i <= N; i++)
+	for (int i = 0; i < N; i++)
 	{
-		vec.push_back(i);
-		RF(i, 1);
+		int input;
+		cin >> input;
+		arr.push_back(input);
+	}
+
+	sort(arr.begin(), arr.end());
+
+	for (int i = 0; i < N; i++)
+	{
+		vec.push_back(arr[i]);
+		RF(1);
 		vec.pop_back();
 	}
 
