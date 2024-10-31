@@ -33,20 +33,32 @@ int main()
 		}
 
 		int bigger = 0;
-		for (int j = 0; j < N; j++)
+		while (!pq.empty())
 		{
-			bigger = pq.top();
 			if (vec[M] == pq.top())
 			{
 				break;
 			}
+			bigger = pq.top();
 			pq.pop();
 		}
 
 		// bigger을 벡터 내부에서 찾아서
 		// 몇번째 인덱스인지 찾아본다.
+		auto it = find(vec.begin(), vec.end(), bigger);
 
+		int count = 0;
 
+		for (it; it < vec.end(); it++)
+		{
+			count++;
+		}
+		for (int i = 0; i < M; i++)
+		{
+			count++;
+		}
+
+		cout << count << "\n";
 	}
 
 	return 0;
