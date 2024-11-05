@@ -1,71 +1,53 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <cmath>
 using namespace std;
 
-float arr[8001];
+//번역
+// 각 수열을 더한 값에 따라 다른 결과가 나온다.
+// 음수면 -, 양수면 +, 0이면 0
+// 주어진 -,+,0을 보고 어떤 수열인지 예측한다.
+// 수열은 -10 ~ 10의 조합으로 이루어진다.
+
+//아이디어
+// 주어진 수를 가지고 순열을 탐색한다.
+// 순열이 주어진 조건에 일치하는지 살펴본다.
+// 일치하지 않을경우 건너뛰고 다른 순열을 찾는다.
+// 오름차순으로 조사한다.
+// 연산자를 어따가 저장하는게 좋을까
+
+//시간복잡도
+// 재귀함수 사용해서 순열을 조합한다.
+// -10~10까지 최대 10개의 순열을 조합한다.
+// 10! = 10^6 * 7.2 < 10^8 
+// 
+//메모리
+// 방문한 수를 방문하지 않게하기위한 배열 
+// int * 20
+// 
+//자료형
+// 최대 합은 10 * 10 = 100이므로 int 사용
+
+int n;
+string sinput;
+
+//현재 조합한 수열의 연산을 해줄 함수
+bool apply_toSign()
+{
+
+}
+
+//재귀함수를 그만둘 조건
+// n개의 수를 모두 탐색한 경우
+// 문자로 입력받은 값과 누적 값이 일치하지 않는 경우
+//파라미터
+//   
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	float N;
-	cin >> N;
-
-	vector<int> vec;
-
-	int average;
-	int middle;
-	int most = 0;
-	int range;
-
-	int sum = 0.0f;
-	int many = -4000;
-	int mini = 4000;
-	int num = 0;
-
-	for (int i = 0; i < N; i++)
-	{
-		int input;
-		cin >> input;
-		vec.push_back(input);
-
-		sum += input;
-		arr[input + 4000]++;
-		if (num < arr[input + 4000])
-		{
-			num = arr[input + 4000];
-		}
-	}
-
-	sort(vec.begin(), vec.end());
-	average = round(sum / N);
-	range = vec[N - 1] - vec[0];
-	middle = vec[N / 2];
-	vec.erase(unique(vec.begin(), vec.end()), vec.end());
-
-	//두번째로 작은 최빈값 찾기
-	int second = 1;
-	for (int i = 0; i < vec.size(); i++)
-	{
-		if (arr[vec[i] + 4000] == num)
-		{
-			most = vec[i];
-			if (second == 2)
-			{
-				break;
-			}
-			second++;
-		}
-	}
-
-	cout << average << "\n";
-	cout << middle << "\n";
-	cout << most << "\n";
-	cout << range << "\n";
-
+	cin >> n;
+	cin >> sinput;
 
 	return 0;
 }
