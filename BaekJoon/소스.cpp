@@ -1,73 +1,71 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 using namespace std;
 
-int arr[500001] = {0};
-vector<int> vec;
+float arr[8001];
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int average;
-	int middle;
-	int most;
-	int range;
-
-	int N;
+	float N;
 	cin >> N;
 
-	float sum = 0;
-	int maxi = -4000;
+	vector<int> vec;
+
+	int average;
+	int middle;
+	int most = 0;
+	int range;
+
+	int sum = 0.0f;
+	int many = -4000;
 	int mini = 4000;
+	int num = 0;
 
 	for (int i = 0; i < N; i++)
 	{
 		int input;
 		cin >> input;
-		arr[input]++;
-		vec.push_back(N);
-		sum += input;
+		vec.push_back(input);
 
-		mini = min(mini, input);
-		maxi = max(maxi, input);
+		sum += input;
+		arr[input + 4000]++;
+		if (num < arr[input + 4000])
+		{
+			num = arr[input + 4000];
+		}
 	}
 
 	sort(vec.begin(), vec.end());
-
 	average = round(sum / N);
-	middle = vec[(N - 1) / 2];
+	range = vec[N - 1] - vec[0];
+	middle = vec[N / 2];
+	vec.erase(unique(vec.begin(), vec.end()), vec.end());
 
-	int count = 1;
-	vector<int> v;
-	for (int i = 1; i <= 500000; i++)
+	//두번째로 작은 최빈값 찾기
+	int second = 1;
+	for (int i = 0; i < vec.size(); i++)
 	{
-		if (arr[i] > count)
+		if (arr[vec[i] + 4000] == num)
 		{
-			v.clear();
-			v.push_back(i);
+			most = vec[i];
+			if (second == 2)
+			{
+				break;
+			}
+			second++;
 		}
-		else if (arr[i] == count)
-		{
-			v.push_back(i);
-		}
 	}
-	if (v.size() > 1)
-	{
-		most = v[1];
-	}
-	else
-	{
-		most = v[0];
-	}
-	range = maxi - mini;
-	
+
 	cout << average << "\n";
 	cout << middle << "\n";
 	cout << most << "\n";
-	cout << range;
+	cout << range << "\n";
+
 
 	return 0;
 }
