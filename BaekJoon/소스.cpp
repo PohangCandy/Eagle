@@ -34,10 +34,26 @@ using namespace std;
 
 vector<int> vec;
 int n;
+char clue[10][10];
 
+//백트래킹
+//새로운 조건을 추가하며
+//현재까지의 조건과 합했을 때 부합하는지 테스트
+//파라미터
+// 백트래킹을 시작할 높이 int h 
 bool backTrack(int h)
 {
+	int sum = 0;
+	//가장 밑에 있는 높이까지 조사를 실행
+	for (int i = h; i >= 0; i--)
+	{
+		sum += vec[i];
+		if (clue[h][i] == '+' && sum <= 0) return false;
+		else if (clue[h][i] == '-' && sum >= 0) return false;
+		else if (clue[h][i] == '0' && sum != 0) return false;
+	}
 
+	return true;
 }
 
 //재귀함수를 그만둘 조건
@@ -71,19 +87,21 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	char map[10][10];
-
 	cin >> n;
 
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = i; j < n; j++)
 		{
-			cin >> map[i][j];
+			// 0 0, 1 0, 2 0, 3 0
+			//		1 1, 2 1, 3 1
+			//			 2 2, 3 2
+			//				  3 3
+			cin >> clue[j][i];
 		}
 	}
 
-	
+	RR(0);
 
 	return 0;
 }
