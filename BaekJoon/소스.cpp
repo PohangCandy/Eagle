@@ -1,112 +1,141 @@
 //아이디어
-// 오우 쉣..풀다보니 dfs로는 안될 것 같다. 
-// 하나의 노드에서 전체를 탐방하는 것이 아니라,
-// 전체를 부분집합으로 나눠야 한다.
-// 문제의 핵심은 
-// 가로로 묶인 집합과 세로로 묶인 집합을 각각 어떻게 표현할 것인가이다.
-// 이를 비트마스크를 이용해서
-// 0을 가로로 묶인 집합, 1을 세로로 묶인 집합으로 나타낸다.
+// dfs는 연결된 노드를 조사하고 
+// 순서대로 탐색하게 하면 된다.
+// bfs는 연결된 노드를 큐에 넣고,
+// 큐에 있는 노드를 탐색하게 한다.
 
-//시간복잡도
-// 16 비트를 각각 나타내는 경우의 수 2^16 = 약 10^5
-// 여기에 쓰여진 각 숫자를 탐방하므로 *16, 
-// 총 약 10^6
+//벡터로 입력을 받았더니,정렬이 되지 않으므로
+//벡터안 내용을 정렬해준다.
+
+//모든 노드가 탐색 가능하다는 전제가 없으므로
+// 길이가 최대가 되는 탐색이 결과가 되게 해준다.
+
 
 #include <iostream>
+#include <vector>
+#include <queue>
+#include <map>
+#include <algorithm>
 using namespace std;
 
-int arr[4][4];
+int N, M, V;
+int maxHeight = 0;
+
+vector<int> node[1001];
+
+vector<int> result;
+
+vector<int> vec_dfs;
+bool find_dfs = false;
+
+vector<int> vec_bfs;
+bool find_bfs = false;
+
+queue<int> que_bfs;
+
+int visited[1001];
+
+void dfs(int h, int s)
+{
+	if (find_dfs) return;
+
+	if (h > maxHeight)
+	{
+		maxHeight = h;
+		result = vec_dfs;
+		if (h == M + 1) find_dfs = true;
+	}
+
+	//노드가 연결하고 있는 모든 간선을 조사한다.
+	for (int i = 0; i < node[s].size(); i++)
+	{
+		if (visited[node[s][i]]) continue;
+		visited[node[s][i]] = 1;
+		vec_dfs.push_back(node[s][i]);
+		dfs(h + 1, node[s][i]);
+		vec_dfs.pop_back();
+		visited[node[s][i]] = 0;
+	}
+
+}
+
+void bfs(int c, int s)
+{
+	if (find_bfs) return;
+
+	if (c > maxHeight)
+	{
+		result = vec_bfs;
+		if (c == M + 1) find_bfs = true;
+	}
+
+	for (int i = 0; i < node[s].size(); i++)
+	{
+		//노드가 갈 수 있는 노드를 모두 큐에 담는다.
+		if (visited[node[s][i]]) continue;
+		que_bfs.push(node[s][i]);
+	}
+	//큐 앞에 있는 친구를 뽑아서 다시 탐색한다.
+
+	if (!que_bfs.empty())
+	{
+		int qfront = que_bfs.front();
+		que_bfs.pop();
+
+		if (visited[qfront]) return;
+		vec_bfs.push_back(qfront);
+		visited[qfront] = 1;
+		bfs(c + 1, qfront);
+		visited[qfront] = 0;
+		vec_bfs.pop_back();
+	}
+}
 
 int main()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int result = 0;
+	cin >> N >> M >> V;
 
-	int N, M;
-	cin >> N >> M;
+	for (int i = 0; i < M; i++)
+	{
+		int a, b;
+		cin >> a >> b;
+		node[a].push_back(b);
+		node[b].push_back(a);
+	}
 
 	for (int i = 0; i < N; i++)
 	{
-		string input;
-		cin >> input;
-
-		for (int j = 0; j < M; j++)
-		{
-			arr[i][j] = input[j] - '0';
-		}
+		sort(node[i].begin(), node[i].end());
 	}
 
-	// N * M개의 비트를 가지고 비트를 짠다.
-	// 가로 배열이 양 옆에 붙어있는 경우
-	// 현재 값 * 10 + 새로운 가로 배열의 값
-	// 중간에 세로 배열이 나타날 경우 
-	// 총합에 현재값을 더한 후, 현재 값을 0으로 초기화
+	visited[V] = 1;
+	vec_dfs.push_back(V);
+	dfs(1, V);
+	vec_dfs.pop_back();
+	visited[V] = 0;
 
-	for (int i = 0; i < (1 << (N * M)); i++)
+	for (auto& a : result)
 	{
-		//가로 세로 집합의 총합을 저장할 변수
-		int total = 0;
-
-		//가로로 묶여있는 값들 먼저 계산한다.
-		//기로 집합은 각 줄마다 더해지므로
-		for (int j = 0; j < N; j++)
-		{
-			int sum = 0;
-			for (int k = 0; k < M; k++)
-			{
-				//현재 비트가 세로 집합이라면
-				//현재 값을 총합에 더하고, 초기화킨다.
-				if (i & (1 << (j * M + k)))
-				{
-					total += sum;
-					sum = 0;
-				}
-				//가로 집합이라면
-				//지금까지 이어진 가로 집합 *10 + 현재 값
-				else
-				{
-					sum = sum * 10 + arr[j][k];
-				}
-			}
-			//마지막 줄이 가로로 끝난 경우
-			//총합에 sum을 더한다.
-			total += sum;
-		}
-
-
-		//세로로 묶여있는 값 들을 계산한다.
-		//세로 집합은 각 줄마다 더해지므로
-		for (int j = 0; j < M; j++)
-		{
-			int sum = 0;
-			for (int k = 0; k < N; k++)
-			{
-				//현재 비트가 세로 집합이라면
-				// 지금까지 이어진 세로 집합 *10 + 현재 값
-				if (i & (1 << (k * M + j)))
-				{
-					sum = sum * 10 + arr[k][j];
-				}
-				//가로 집합이라면
-				//현재 값을 총합에 더하고, 초기화킨다.
-				else
-				{
-					total += sum;
-					sum = 0;
-				}
-			}
-			//마지막 줄이 세로로 끝난 경우
-			//총합에 sum을 더한다.
-			total += sum;
-		}
-
-		//주어진 비트에서 계산된 총 합의 최댓값이 정답이 된다.
-		result = max(result, total);
+		cout << a << " ";
 	}
+	cout << "\n";
+	result.clear();
+	maxHeight = 0;
 
-	cout << result;
+	visited[V] = 1;
+	vec_bfs.push_back(V);
+	bfs(1, V);
+	vec_bfs.pop_back();
+	visited[V] = 0;
+
+	for (auto& a : result)
+	{
+		cout << a << " ";
+	}
+	cout << "\n";
 
 	return 0;
 }
