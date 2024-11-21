@@ -5,17 +5,26 @@
 // 큐에 있는 노드를 탐색하게 한다.
 
 //벡터로 입력을 받았더니,정렬이 되지 않으므로
-//벡터안 내용을 정렬해준다.
+//벡터 안 내용을 정렬해준다.
 
 //모든 노드가 탐색 가능하다는 전제가 없으므로
 // 길이가 최대가 되는 탐색이 결과가 되게 해준다.
 
+//시간초과가 발생한다.
+// 최대 높이를 찾을때까지 탐색을 하도록 만들어 주어서 그런듯하다.
+// dfs, bfs를 사용할때 
+// 끊어진 트리가 없다는 점을 가정하여
+// 간선의 개수로 최대 방문 가능한 정점의 개수를
+// 최대 높이로 정해본다.
+
+//N은 최대 1000
+//M은 최대 10000
 
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <map>
 #include <algorithm>
+#include <string.h>
 using namespace std;
 
 int N, M, V;
@@ -23,71 +32,47 @@ int maxHeight = 0;
 
 vector<int> node[1001];
 
-vector<int> result;
-
-vector<int> vec_dfs;
-bool find_dfs = false;
-
-vector<int> vec_bfs;
-bool find_bfs = false;
-
 queue<int> que_bfs;
 
 int visited[1001];
 
-void dfs(int h, int s)
+void dfs(int s)
 {
-	if (find_dfs) return;
-
-	if (h > maxHeight)
-	{
-		maxHeight = h;
-		result = vec_dfs;
-		if (h == M + 1) find_dfs = true;
-	}
+	visited[s] = 1;
+	cout << s << " ";
 
 	//노드가 연결하고 있는 모든 간선을 조사한다.
 	for (int i = 0; i < node[s].size(); i++)
 	{
-		if (visited[node[s][i]]) continue;
-		visited[node[s][i]] = 1;
-		vec_dfs.push_back(node[s][i]);
-		dfs(h + 1, node[s][i]);
-		vec_dfs.pop_back();
-		visited[node[s][i]] = 0;
+		if (!visited[node[s][i]])
+		dfs(node[s][i]);
 	}
-
 }
 
-void bfs(int c, int s)
+void bfs(int s)
 {
-	if (find_bfs) return;
+	visited[s] = 1;
+	que_bfs.push(s);
 
-	if (c > maxHeight)
+	//큐가 비어있지 않다면
+	while (!que_bfs.empty())
 	{
-		result = vec_bfs;
-		if (c == M + 1) find_bfs = true;
-	}
-
-	for (int i = 0; i < node[s].size(); i++)
-	{
-		//노드가 갈 수 있는 노드를 모두 큐에 담는다.
-		if (visited[node[s][i]]) continue;
-		que_bfs.push(node[s][i]);
-	}
-	//큐 앞에 있는 친구를 뽑아서 다시 탐색한다.
-
-	if (!que_bfs.empty())
-	{
-		int qfront = que_bfs.front();
+		// 큐의 프론트에 있는 값을 출력하고,
+		// 프론트와 연결된 노드를 큐에 집어넣는다.
+		cout << que_bfs.front() << " ";
+		int x = que_bfs.front();
 		que_bfs.pop();
 
-		if (visited[qfront]) return;
-		vec_bfs.push_back(qfront);
-		visited[qfront] = 1;
-		bfs(c + 1, qfront);
-		visited[qfront] = 0;
-		vec_bfs.pop_back();
+		//큐의 프론트에 있던 정점과 연결된 정점을 다시 큐에 담아준다.
+		for (int i = 0; i < node[x].size(); i++)
+		{
+			//노드가 갈 수 있는 노드를 모두 큐에 담는다.
+			if (!visited[node[x][i]])
+			{
+				visited[node[x][i]] = 1;
+				que_bfs.push(node[x][i]);
+			}
+		}
 	}
 }
 
@@ -106,36 +91,17 @@ int main()
 		node[b].push_back(a);
 	}
 
-	for (int i = 0; i < N; i++)
+	for (int i = 1; i <= N; i++)
 	{
 		sort(node[i].begin(), node[i].end());
 	}
 
-	visited[V] = 1;
-	vec_dfs.push_back(V);
-	dfs(1, V);
-	vec_dfs.pop_back();
-	visited[V] = 0;
+	dfs(V);
 
-	for (auto& a : result)
-	{
-		cout << a << " ";
-	}
+	memset(visited, 0, sizeof(visited));
 	cout << "\n";
-	result.clear();
-	maxHeight = 0;
 
-	visited[V] = 1;
-	vec_bfs.push_back(V);
-	bfs(1, V);
-	vec_bfs.pop_back();
-	visited[V] = 0;
-
-	for (auto& a : result)
-	{
-		cout << a << " ";
-	}
-	cout << "\n";
+	bfs(V);
 
 	return 0;
 }
