@@ -1,26 +1,38 @@
 //아이디어
-// 방문하지 않은 단지를 방문하면서 dfs를 한다.
-// 방문한 단지의 최대 높이를 벡터 배열에 저장한다.
-
+// 사이클이 있으려면 적어도 두개의 인접합 노드의 색상이
+// 같은 색상이어야 한다.
+// 좌상, 좌하, 우상, 우하 네 종류의 인접한 노드가 있을 수 있다.
+// 인접한 노드를 각각 A,B,C,D라고 할 때
+// 상,하,좌,우 dfs탐색을 하고, A에서 출발해서 B || C || D에 도착할 수 있다면, 
+// 사이클이 존재한다.
 
 #include <iostream>
-#include <vector>
 using namespace std;
 
+char Tile[50][50];
+int visited[50][50];
 
-int Tile[25][25] = { 0 };
-int visited[25][25] = { 0 };
-//상하좌우
-int x[4] = { 0,0,-1,1 };
-int y[4] = { 1,-1,0,0 };
+int dx[4] = { 0,0,1,-1 };
+int dy[4] = { 1,-1,0,0 };
 
-void dfs(int w, int h)
+int N, M;
+int sx, sy;
+
+void dfs(int y, int x)
 {
+	//사이클이 이루어지는지 확인하는 작업
 	for (int i = 0; i < 4; i++)
 	{
-		if (visited[w + x[i]][h + y[i]]) continue;
-		visited[w + x[i]][h + y[i]] = 1;
-		dfs(w + x[i], h + y[i]);
+
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (y + dy[i] < 0 || y + dy[i] >= N || x + dx[i] < 0 || x + dx[i] >= M) continue;
+		if (Tile[y + dy[i]][x + dx[i]] != Tile[y][x]) continue;
+		if (visited[y + dy[i]][x + dx[i]]) continue;
+
+		dfs(y + dy[i], x + dx[i]);
 	}
 }
 
@@ -29,23 +41,27 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int N;
-	cin >> N;
+	cin >> N >> M;
 
 	for (int i = 0; i < N; i++)
 	{
-		for (int j = 0; j < N; j++)
+		string s;
+		cin >> s;
+		for (int j = 0; j < M; j++)
 		{
-			cin >> Tile[i][j];
+			Tile[i][j] = s[i];
 		}
 	}
 
 	for (int i = 0; i < N; i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < M; j++)
 		{
-			if (visited[Tile[i][j]]) continue;
-			dfs(i , j);
+			if (visited[i][j]) continue;
+			visited[i][j] = 1;
+			sy = i;
+			sx = j;
+			dfs(i, j);
 		}
 	}
 
