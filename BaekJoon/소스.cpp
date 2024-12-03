@@ -1,130 +1,72 @@
 //아이디어
-// 같은 섬을 방문하지 않고, 다른 섬을 방문하는게 문제의 포인트 같다.
-// 1. 섬 주변에 있는 타일을 찾는다.
-// 2. 타일이 다른 섬에 닿을때까지 탐색한 높이를 저장한다.
-// 3. 나온 높이의 최솟값을 출력한다.
+//	문제의 핵심은 벽을 최소한으로 뚫는 것
+//	목적지까지 가는 모든 경로를 탐색하고
+//	벽이 최소한으로 뚫리는 길을 
+//	알아봐야 할 거 같은데??
+
+// (1,1)에서 (N,M)으로 움직이려면
+// 상,좌 보단 하,우로 움직이고
+// 벽이 있는 공간보단 없는 공간으로 먼저 탐색을 해야한다.
+// 근데 그럼 다른데 최단 거리가 존재할 수 있지 않을까?
+
+//그럼 이건 어떨까?
+// 빈방을 먼저 탐색한 후
+// 하, 우를 우선으로 탐색하고,
+// 목적지에 도착했을때 최소 높이를 저장해둔다.
+// 큐에 들어있는 모든 노드들이
+// 최소 높이를 초과하지 않을때 탐사를 계속해준다.
+
+// 벽을 뚫은 횟수가 
+// 적은 탐색 경로를 우선으로 탐색한다.
+
 #include <iostream>
-#include <queue>
-#include <vector>
-#include <string.h>
+#include <deque>
 using namespace std;
 
-//맵의 길이
-int N;
-// 맵 정보
-int Tile[100][100] = {0};
-// 땅이 속한 나라
-// 0일 경우 강
-int country[100][100] = {0};
-// 탐색 방문 여부
-int check[100][100] = { 0 };
-// 다리의 길이 = 탐색 높이
-int height[100][100] = {0};
+int N, M;
 
-//상하좌우
-int dx[4] = { 0,0,1,-1 };
-int dy[4] = { 1,-1,0,0 };
+int Tile[101][101];
+int visited[101][101] = {0};
+int h[101][101] = {0};
 
-//탐색 첫번째, 두번째 섬 방문여부
-bool from_i = false;
-bool to_i = false;
+int dx[4] = { 0,1,0,-1 };
+int dy[4] = { 1,0,-1,0 };
 
-//방문한 첫 번째, 두 번째 섬 인덱스 저장
-int from;
-int to;
-
-//정답을 저장할 변수
-//최대 방문 타일 100*100 가정
-int ans = 10000;
-
-//섬의 종류를 저장할 벡터 
-vector<vector<pair<int, int>>> island;
-
-void bfs_island(int y, int x, int c)
+void bfs()
 {
-	//섬의 모든 좌표를 저장할 벡터
-	vector<pair<int, int>> land;
+	deque<pair<int,int>> d;
+	d.push_back({ 1, 1 });
 
-	//bfs 탐색을 위한 큐
-	queue<pair<int,int>> q;
-	check[y][x] = 1;
-	country[y][x] = c;
-	q.push(make_pair(y, x));
-
-	while (!q.empty())
+	// 빈 방 먼저,
+	// 하,우 방향 먼저 부시기
+	while (!d.empty())
 	{
-		int fy = q.front().first;
-		int fx = q.front().second;
-		land.push_back(q.front());
-		q.pop();
+		int fy = d.front().first;
+		int fx = d.front().second;
 
-		for(int i = 0; i < 4; i++)
+		if (fy == M && fx == N)
 		{
-			// 맵 범위를 벗어날 경우 continue
-			if (fy + dy[i] < 0 || fy + dy[i] >= N || fx + dx[i] < 0 || fx + dx[i] >= N) continue;
-			// 타일이 강인 경우 continue
-			if (!Tile[fy + dy[i]][fx + dx[i]]) continue;
-			// 이미 방문한 노드일 경우 continue
-			if (check[fy + dy[i]][fx + dx[i]]) continue;
-			//한번 방문한 땅은 방문 표시
-			check[fy + dy[i]][fx + dx[i]] = 1;
-			// 방문한 땅의 나라 표시
-			country[fy + dy[i]][fx + dx[i]] = c;
-			// 큐에 방문한 노드 push
-			q.push(make_pair(fy + dy[i], fx + dx[i]));
+			cout << h[fy][fx];
+			break;
 		}
-	}
 
-	//섬에 지금까지 모아둔 좌표 담기
-	island.push_back(land);
-}
-
-//강만 밟도록 만든 bfs
-void bfs_ocean(int y, int x)
-{
-	//강에서 bfs를 하면서,
-	//두번째로 방문할 섬을 찾자.
-	queue<pair<int, int>> q;
-	q.push(make_pair(y, x));
-	//첫 노드의 높이는 1
-	height[y][x] = 1;
-
-	while (!q.empty())
-	{
-		//다른 섬에 도착할때까지 방문을 한다.
-		if (to_i) break;
-
-		int fy = q.front().first;
-		int fx = q.front().second;
-		q.pop();
-
+		//빈 방을 모두 탐색하고,
+		//더 이상 탐색할 빈방이 없으면 
+		//벽을 하나씩 뚫어본다.
 		for (int i = 0; i < 4; i++)
 		{
-			//맵 범위를 벗어난 경우 continue
-			if (fy + dy[i] < 0 || fy + dy[i] >= N || fx + dx[i] < 0 || fx + dx[i] >= N) continue;
-			//이미 방문한 노드의 경우 continue
-			if (check[fy + dy[i]][fx + dx[i]]) continue;
-			//섬을 방문했을 경우
-			if (Tile[fy + dy[i]][fx + dx[i]])
+			if (fy + dy[i] < 0 || fy + dy[i] >= M || fx + dx[i] < 0 || fx + dx[i] > N) continue;
+			if (visited[fy + dy[i]][fx + dx[i]]) continue;
+			visited[fy + dy[i]][fx + dx[i]] = 1;
+			if (!Tile[fy + dy[i]][fx + dx[i]]) d.push_front(make_pair(fy + dy[i], fx + dx[i]));
+			//벽을 뚫어야 하는 경우
+			else
 			{
-				//출발한 섬을 방문했다면 continue
-				if (country[fy + dy[i]][fx + dx[i]] == from) continue;
-				//두 번째 섬에 도착한 경우
-				//높이를 저장해둔다.
-				ans = min(ans, height[fy][fx]);
-				//두 번째 섬 방문 여부 표시
-				to_i = true;
-				//bfs에선 가장 먼저 도착했을 때가 최소 높이이므로
-				//두번째 섬을 방문했다면 break한다.
-				break;
+				//높이를 어떻게 지정해줘야할까..
+				h[fy + dy[i]][fx + dx[i]] = h[fy][fx] + 1;
+				Tile[fy + dy[i]][fx + dx[i]] = 0;
+				d.push_back(make_pair(fy + dy[i], fx + dx[i]));
 			}
-			//강을 방문했을 경우
-			//방문 여부 표시
-			check[fy + dy[i]][fx + dx[i]] = 1;
-			//탐색 높이 표시
-			height[fy + dy[i]][fx + dx[i]] = height[fy][fx] + 1;
-			//새로 도착한 타일을 큐에 push
-			q.push(make_pair(fy + dy[i], fx + dx[i]));
 		}
 	}
 }
@@ -134,95 +76,21 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	cin >> N;
+	cin >> N >> M;
 
-	//타일 맵 입력받기
-	for (int y = 0; y < N; y++)
+	for (int i = 0; i < M; i++)
 	{
-		for (int x = 0; x < N; x++)
+		string s;
+		cin >> s;
+		for (int j = 0; j < N; j++)
 		{
-			cin >> Tile[y][x];
+			Tile[i][j] = s[j] - '0';
 		}
 	}
 
-	//섬의 종류를 나눌 변수
-	int c = 1;
-
-	//섬 종류별로 나누기
-	//각 땅이 어떤 섬에 속해있는지 담아준다.
-	for (int y = 0; y < N; y++)
-	{
-		for (int x = 0; x < N; x++)
-		{
-			//이미 방문한 땅은 가지 않는다.
-			if (check[y][x]) continue;
-			//강은 방문하지 않는다.
-			if (!Tile[y][x]) continue;
-			bfs_island(y, x, c);
-			c++;
-		}
-	}
-
-	////섬의 좌표를 한번 뽑아본다.
-	//for (int i = 0; i < island[2].size(); i++)
-	//{
-	//	cout << island[2][i].first << "," << island[2][i].second;
-	//	cout << "\n";
-	//}
-
-	//이제 바다에서 다리를 잇는다.
-	//섬에 닿으면 이전에 섬과 닿은 적이 있는지 조사하고, 
-	//닿은 적 없으면 연결한다.
-	//닿인 적이 있다면 이전 섬과 지금 섬이 같은 섬인지 여부를 조사하고
-	//이전과 같은 섬이라면 넘어가고
-	// 다른섬이라면 그 섬까지의 거리를 잰다.
-	// 
-	// 섬 주변 노드에서 출발시키면 된다.
-	// 상하좌우에 섬이 있는지 체크하고,
-	// 섬이 없다면 넘어가고, 섬이 있다면
-	// 첫번째 섬으로 저장한다.
-
-
-	for (int y = 0; y < N; y++)
-	{
-		for (int x = 0; x < N; x++)
-		{
-			//탐색을 시작할 시작 지점을 정하는 작업을 한다.
-			
-			//주변에 섬이 있는 강만 조사한다.
-			//주변에 있는 섬을 저장할 변수
-			from_i = false;
-			to_i = false;
-
-			//새로 시작할 출발 노드를 갱신해주기 위해
-			//방문 배열 초기화
-			memset(check, 0, sizeof(check));
-			//새로 탐색할 높이 갱신하기위한
-			//높이 초기화
-			memset(height, 0, sizeof(height));
-
-			//방문한 적이 있는 노드는 패스
-			if (check[y][x]) continue;
-			//강이 아니라면 패스
-			if (Tile[y][x]) continue;
-
-			for (int i = 0; i < 4; i++)
-			{
-				if (from_i) break;
-				if ((Tile[y + dy[i]][x + dx[i]]))
-				{
-					from_i = true;
-					from = country[y + dy[i]][x + dx[i]];
-				}
-			}
-			if (!from_i) continue;
-			check[y][x] = 1;
-			bfs_ocean(y, x);
-		}
-	}
-
-	cout << ans;
-
-
+	bfs();
+	
 	return 0;
 }
+
+
