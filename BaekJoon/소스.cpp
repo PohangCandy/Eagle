@@ -46,15 +46,17 @@ class Node {
 	//탐색 높이
 	int height;
 public:
-	Node(int _x, int _y,bool _w, int _v = 0, int _h = 0) : x(_x), y(_y),wall(_w), visited(_v), height(_h) {}
+	Node(int _x, int _y, bool _w, int _v = 0, int _h = 0) : x(_x), y(_y), wall(_w), visited(_v), height(_h) {}
 
 	bool operator==(const Node n)const {
 		return ((this->x == n.x) && (this->y == n.y));
 	}
 
+	//여기 연산자 오버로딩에서 부호 방향을 틀렸었다.
+	//이것 때문에 한참 찾음
 	bool operator<(const Node n) const
 	{
-		return this->height < n.height;
+		return this->height > n.height;
 	}
 
 	int getheight()
@@ -114,29 +116,38 @@ void bfs()
 	//처음 0,0노드에서 시작
 	Tile[0].setvisited();
 	pq.push(Tile[0]);
+	//cout << "(0,0)-> ";
 
 	while (!pq.empty())
 	{
 		Node n = pq.top();
 		//목적지에 다다른 노드의 높이를 출력한다.
-		if (n.ans(N-1,M-1))
+		if (n.ans(N - 1, M - 1))
 		{
 			ans = min(ans, n.getheight());
+			pq.pop();
+			//cout << "(" << n.getxpos() << "," << n.getypos() << ")" << "-> ";
+			//우선 순위 큐가 항상 높이가 낮은 경로를 우선 탐색해부므로
+			//가장 처음 목적지에 다다랐을때가 최단 경로가 될 것이다.
+			break;
 		}
 		pq.pop();
+
+		//cout << "(" << n.getxpos() << "," << n.getypos() << ")" << "-> ";
 
 		//상하좌우로 이동
 		for (int i = 0; i < 4; i++)
 		{
 			int x = n.getxpos();
 			int y = n.getypos();
+
 			//x,y 죄표로 Tile에 저장된 값 인덱스 찾기
 			if (x + dx[i] < 0 || x + dx[i] >= N || y + dy[i] < 0 || y + dy[i] >= M) continue;
 
-			int curh = Tile[x  + y * M].getheight();
-			int nexth = Tile[x + dx[i] + (y + dy[i]) * M].getheight();
-			bool nextIswall = Tile[x + dx[i] + (y + dy[i]) * M].isWall();
-			bool nextIsvisited = Tile[x + dx[i] + (y + dy[i]) * M].isvisited();
+			int curh = Tile[x + y * N].getheight();
+			int nexth = Tile[x + dx[i] + (y + dy[i]) * N].getheight();
+			bool nextIswall = Tile[x + dx[i] + (y + dy[i]) * N].isWall();
+			bool nextIsvisited = Tile[x + dx[i] + (y + dy[i]) * N].isvisited();
 			bool next_Got_higher_height = (nextIswall && (nexth > curh + 1)) || (!nextIswall && (nexth > curh));
 
 			//이미 방문한 타일을 재방문한 경우
@@ -151,7 +162,7 @@ void bfs()
 			// 방문 표시를 업데이트 해준다.
 			if (!nextIsvisited)
 			{
-				Tile[x + dx[i] + (y + dy[i]) * M].setvisited();
+				Tile[x + dx[i] + (y + dy[i]) * N].setvisited();
 			}
 
 			//벽인 경우, 높이를 증가시킨다.
@@ -159,16 +170,16 @@ void bfs()
 			if (nextIswall)
 			{
 				if (curh + 1 > ans) continue;
-				Tile[x + dx[i] + (y + dy[i]) * M].setheight(curh + 1);
+				Tile[x + dx[i] + (y + dy[i]) * N].setheight(curh + 1);
 			}
 			//벽이 아니라면 높이는 유지된다.
 			else
 			{
-				Tile[x + dx[i] + (y + dy[i]) * M].setheight(curh);
+				Tile[x + dx[i] + (y + dy[i]) * N].setheight(curh);
 			}
 
 			//우선순위 큐에 탐색한 노드를 올린다. 
-			pq.push(Tile[x + dx[i] + (y + dy[i]) * M]);
+			pq.push(Tile[x + dx[i] + (y + dy[i]) * N]);
 		}
 
 	}
@@ -182,14 +193,10 @@ int main()
 
 	cin >> N >> M;
 
-	//3 3
-	//011
-	//111
-	//110
-	// 0~8까지 Tile[8]까지 만들어진다.
-	// (2,0)에서 아래로 이동, (2,1)으로 이동하는 경우
-	// Tile[2] -> Tile[5]로 이동
-	// Tile[2 + 0 * 3] ->  Tile[2 + 1 * 3]
+	//4 2
+	//0001
+	//1000
+	// 0~7까지 Tile[7]까지 만들어진다.
 
 	for (int i = 0; i < M; i++)
 	{
@@ -197,14 +204,16 @@ int main()
 		cin >> s;
 		for (int j = 0; j < N; j++)
 		{
-			Node node(i, j, s[j]);
+			//node(x,y,w)
+			Node node(j, i, s[j] - '0');
 			Tile.push_back(node);
 		}
 	}
 
 	bfs();
 
+	//cout << "\n";
 	cout << ans;
-	
+
 	return 0;
 }
