@@ -1,75 +1,37 @@
-//아이디어
-// 노드 클래스를 만들고, 루트, 자식에 정보를 담는다.
-// 모든 노드를 컨테이너에 담아두었다가,
-// 전위, 중위, 후위 순서에 따라 노드를 방문할때
-// 알파벳의 인덱스에 해당하는 번호로 이동하게 해준다.
+// 모든 정점에서 dfs를 구하려고하니
+// 시간복잡도가 n^2이되어 10^10이 되므로
+// 시간초과가 발생했다.
+// 
+// 조사해본 결과 지름을 구하는 방법이 존재했다.
+// 트리의 지름을 구하는 방법은 다음과 같다.
+// 먼저 임의의 한 정점에서 가장 거리가 먼 정점 A를 찾는다.
+// 정점 A에서 다시 가장 거리가 먼 정점 B를 찾는다.
+// 이때 A,B가 이루는 거리가 트리의 지름이 된다.
+
 #include <iostream>
 #include <vector>
-#include <stack>
+#include <string.h>
 using namespace std;
 
-class Node {
-	char root;
-	char leftChild;
-	char rightChild;
+vector<pair<int, int>> tree[100001];
+int visited[100001];
+int ans = 0;
+int firstMaxNode = 0;
 
-public:
-	Node(char _root, char _lc = '.', char _rc = '.') : root(_root), leftChild(_lc), rightChild(_rc) {}
-
-	char getLc()
-	{
-		return leftChild;
-	}
-
-	char getRc()
-	{
-		return rightChild;
-	}
-
-	char getRoot()
-	{
-		return root;
-	}
-};
-
-//모든 노드를 저장할 컨테이너
-vector<Node> Tree[26];
-
-
-//전위는 스택을 사용하면 된다.
-// rc,lc순으로 넣는다.
-//A
-//C,B
-//C,D
-//F,E
-//G
-void pT()
+void dfs(int s, int d)
 {
-	stack<Node> s;
-	//처음 A 삽입
-	s.push(Tree[0][0]);
-
-	while(!s.empty())
+	visited[s] = 1;
+	if (d > ans) 
 	{
-		Node n = s.top();
-		cout << n.getRoot();
-		s.pop();
-
-		//반횐되는 문자열을 인덱스로 변환
-		//왼쪽을 먼저 탐색하기위해 나중에 삽입(LILO)
-		if (n.getRc() != '.')
-		{
-			Node rc = Tree[n.getRc() - 'A'][0];
-			s.push(rc);
-		}
-		if (n.getLc() != '.')
-		{
-			Node lc = Tree[n.getLc() - 'A'][0];
-			s.push(lc);
-		}
-
+		ans = d;
+		firstMaxNode = s;
 	}
 
+	for (int i = 0; i < tree[s].size(); i++)
+	{
+		if (visited[tree[s][i].first]) continue;
+		dfs(tree[s][i].first, tree[s][i].second + d);
+	}
 }
 
 int main()
@@ -77,20 +39,31 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 
-	int N;
-	cin >> N;
-	for (int i = 0; i < N; i++)
+	int VertexNum;
+	cin >> VertexNum;
+	for (int i = 0; i < VertexNum; i++)
 	{
-		char r, lc, rc;
-		cin >> r >> lc >> rc;
-		Node n(r, lc, rc);
+		int start;
+		cin >> start;
+		
+		while (1)
+		{
+			int end;
+			cin >> end;
+			if (end == -1) break;
 
-		Tree[r - 'A'].push_back(n);
+			int distance;
+			cin >> distance;
+
+			tree[start].emplace_back(make_pair(end, distance));
+		}
 	}
 
-	pT();
-	//mT();
-	//bT();
+	//임의의 정점은 1로 한다.
+	dfs(1,0);
+	//첫번째로 찾은 끈점에서 지름을 다시 구한다.
+	memset(visited, 0, sizeof(visited));
+	dfs(firstMaxNode, 0);
 
-	return 0;
+	cout << ans;
 }
